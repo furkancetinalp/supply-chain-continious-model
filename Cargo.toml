@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/supply_chain_continious_model_backend"
+]
+resolver = "2"
