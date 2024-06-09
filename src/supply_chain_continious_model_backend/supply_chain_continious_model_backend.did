@@ -1,3 +1,230 @@
+// DEMAND PLAN
+type AddMonthlyDemandRequest = 
+    record {
+        name: text;
+        description: text;
+        customer_group: text;
+        amount: float64;
+        unit: Unit;
+        from_month :nat8;
+        year: nat16;
+    };
+
+// DEMAND PLAN
+type AddYearlyDemandRequest = 
+    record {
+        name: text;
+        description: text;
+        customer_group: text;
+        amount: float64;
+        unit: Unit;
+        from_year :nat16;
+    };
+
+
+type Demand = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        description: text;
+        customer_group: text;
+        amount: float64;
+        unit: Unit;
+        created_date:text;
+        from :Time;
+        to : Time;
+        period: Period;
+    };
+
+
+//RAW MATERIAL
+type RawMaterial = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        amount: float64;
+        urgency: Urgency;
+        requested_delivery_time:nat8;
+        warehouse_name:text;
+        description: text;
+        unit: Unit;
+        from :Time;
+        to : Time;
+        created_date:text;
+
+    };
+
+
+//RAW MATERIAL PLANNING
+type AddRawMaterialPlanningRequest = 
+    record {
+        name: text;
+        amount: float64;
+        urgency: Urgency;
+        requested_delivery_time:nat8;
+        warehouse_name:text;
+        description: text;
+        unit: Unit;
+        from :Time;
+        to : Time;
+    };
+
+
+//START --- SOURCING AND PROCUREMENT
+
+//RAW MATERIAL OFFERS
+type AddRawMaterialOfferRequest = 
+    record {
+        name: text;
+        amount: float64;
+        unit_price: float64;
+        total_price: float64;
+        company_name:text;
+        delivery_time:nat8;
+        warehouse_name:text;
+        unit: Unit;
+        delivery_date :Time;
+    };
+
+type RawMaterialOffer = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        amount: float64;
+        unit_price: float64;
+        total_price: float64;
+        company_name:text;
+        delivery_time:nat8;
+        warehouse_name:text;
+        unit: Unit;
+        delivery_date :Time;
+        created_date:text;
+    };
+
+//RAW MATERIAL AGREEMENTS
+type AddRawMaterialAgreementRequest = 
+    record {
+        product_name: text;
+        amount: float64;
+        unit_price: float64;
+        total_price: float64;
+        company_name:text;
+        agreement_date:Time;
+        delivery_date:Time;
+        delivery_time : nat8;
+        warehouse_name:text;
+        unit: Unit;
+    };
+type RawMaterialAgreement = 
+    record {
+        identity:text;
+        id: nat32;
+        product_name: text;
+        amount: float64;
+        unit_price: float64;
+        total_price: float64;
+        company_name:text;
+        agreement_date:Time;
+        delivery_date:Time;
+        delivery_time : nat8;
+        warehouse_name:text;
+        unit: Unit;
+        created_date:text;
+    };
+
+//END --- SOURCING AND PROCUREMENT
+
+
+//START --- PROCUREMENT WAREHOUSE
+
+type AddRawMaterialWarehouseRequest = 
+    record {
+        name: text;
+        district: text;
+        province: text;
+        country: text;
+        location_detail: text;
+    };
+type RawMaterialWarehouse = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        district: text;
+        province: text;
+        country: text;
+        location_detail: text;
+        created_date:text;
+    };
+
+//END --- PROCUREMENT WAREHOUSE
+
+type Time = record{
+    year:nat16;
+    month:nat8;
+    day:nat8;
+    formatted:text;
+
+};
+
+type Unit = variant {
+    Kg;
+    Tonne;
+    Piece;
+};
+
+type Period = variant {
+    Year;
+    Month;
+    Week;
+};
+type Urgency = variant {
+    Lowest;
+    Low;
+    Medium;
+    High;
+    Critical;
+};
+
+
 service : {
-    "greet": (text) -> (text) query;
+    //START --- PLANNING
+        //DEMAND PLANNING
+        "add_monthly_demand_plan": (AddMonthlyDemandRequest) -> (opt bool);
+        "add_yearly_demand_plan": (AddYearlyDemandRequest) -> (opt bool);
+        "get_all_demand_plans": () -> (vec Demand) query;
+
+        //RAW MATERIAL PLANNING
+        "add_raw_material_plan": (AddRawMaterialPlanningRequest) -> (opt bool);
+        "get_all_raw_material_plans": () -> (vec RawMaterial) query;
+    //END --- PLANNING
+
+
+    //START --- SOURCING AND PROCUREMENT
+        //RAW MATERIAL OFFERS
+        "add_raw_material_offer": (AddRawMaterialOfferRequest) -> (opt bool);
+        "get_all_raw_material_offers": () -> (vec RawMaterialOffer) query;
+
+        //RAW MATERIAL AGREEMENTS
+        "add_raw_material_agreement": (AddRawMaterialAgreementRequest) -> (opt bool);
+        "get_all_raw_material_agreements": () -> (vec RawMaterialAgreement) query;
+
+    //END --- SOURCING AND PROCUREMENT
+
+
+    //START --- PROCUREMENT WAREHOUSE
+        //RAW MATERIAL WAREHOUSE
+        "add_raw_material_warehouse": (AddRawMaterialWarehouseRequest) -> (opt bool);
+        "get_all_raw_material_warehouses": () -> (vec RawMaterialWarehouse) query;
+
+
+    //END --- PROCUREMENT WAREHOUSE
+
+
+
+
+
 }
