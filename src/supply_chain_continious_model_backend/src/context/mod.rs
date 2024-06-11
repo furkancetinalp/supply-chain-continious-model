@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use crate::entities::demand_planning::Demand;
+use crate::entities::manufacturing::Product;
 use crate::entities::procurement_warehouse::raw_material_warehouse::RawMaterialWarehouse;
 use crate::entities::raw_material_planning::RawMaterial;
 use crate::entities::sourcing_and_procurement::raw_material_agreements::RawMaterialAggreement;
@@ -18,6 +19,9 @@ thread_local! {
     
     //PROCUREMENT WAREHOUSE
     pub static RAW_MATERIAL_WAREHOUSES: RefCell<HashMap<u32, RawMaterialWarehouse>> = RefCell::default();
+    
+    //MANUFACTURING
+    pub static PRODUCTS: RefCell<HashMap<u32, Product>> = RefCell::default();
     
 
 }

@@ -162,6 +162,29 @@ type RawMaterialWarehouse =
 
 //END --- PROCUREMENT WAREHOUSE
 
+
+//START --- MANUFACTURING
+type CreateProductRequest = 
+    record {
+        name: text;
+        price: nat64;
+        unit: Unit;
+    };
+
+type Product = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        price: nat64;
+        unit: Unit;
+        status: ProductStatus;
+        created_date:text;
+    };
+//END --- MANUFACTURING
+
+
+
 type Time = record{
     year:nat16;
     month:nat8;
@@ -189,6 +212,11 @@ type Urgency = variant {
     Critical;
 };
 
+type ProductStatus = variant {
+    PendingApproval;
+    Approved;
+    Rejected;
+};
 
 service : {
     //START --- PLANNING
@@ -222,7 +250,9 @@ service : {
 
 
     //END --- PROCUREMENT WAREHOUSE
-
+        "create_product": (CreateProductRequest) -> (opt bool);
+        "create_bulk_product": (CreateProductRequest,quantity:nat32) -> (opt bool);
+        "get_all_created_products": () -> (vec Product) query;
 
 
 
