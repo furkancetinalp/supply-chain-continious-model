@@ -40,12 +40,27 @@ use crate::idgenerator;
 //GET ALL
 #[ic_cdk::query]
 pub async fn get_all_created_products() -> Vec< Product> {
-    let data: Vec<Product> = PRODUCTS.with(|raw_material_warehouses| {
-        let binding = raw_material_warehouses.borrow();
+    let data: Vec<Product> = PRODUCTS.with(|products| {
+        let binding = products.borrow();
         let filter = binding.iter().filter(|& x| x.1.identity == ic_cdk::caller().to_string()).collect::<Vec<_>>();
         let result = filter.iter().map(|x| x.1.clone()).collect::<Vec<_>>();
         return result;
     });
 
     return data;
+}
+
+
+
+//PRODUCT APPROVING
+#[ic_cdk::update]
+ pub async fn approve_product(product_id:u32,status:ProductStatus) -> Option<bool> {
+     PRODUCTS.with(|products|{
+        let mut products = products.borrow_mut();
+        let  item = products.get_mut(&product_id).unwrap();
+        item.status = status;
+    });
+    return Some(true);
+
+
 }
