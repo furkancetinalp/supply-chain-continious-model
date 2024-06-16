@@ -166,9 +166,11 @@ type RawMaterialWarehouse =
 //START --- MANUFACTURING
 type CreateProductRequest = 
     record {
-        name: text;
-        price: nat64;
-        unit: Unit;
+        // name: text;
+        // price: nat64;
+        barcode:text;
+        // quantity:nat64;
+        // unit: Unit;
     };
 
 type Product = 
@@ -176,13 +178,37 @@ type Product =
         identity:text;
         id: nat32;
         name: text;
-        price: nat64;
-        unit: Unit;
+        // price: nat64;
+        // unit: Unit;
         status: ProductStatus;
+        created_date:text;
+        barcode:text;
+        quantity:nat64;
+    };
+
+type CreateMainProductRequest = 
+    record {
+        name: text;
+        barcode:text;
+        unit: Unit;
+        price: nat64;
+        quantity_per_product:nat32;
+
+    };
+
+type MainProduct = 
+    record {
+        identity:text;
+        id: nat32;
+        name: text;
+        barcode:text;
+        total_amount: nat64;
+        unit: Unit;
+        price: nat64;
+        quantity_per_product:nat32;
         created_date:text;
     };
 //END --- MANUFACTURING
-
 
 
 type Time = record{
@@ -256,6 +282,8 @@ service : {
 
         "approve_product": (nat32,ProductStatus) -> (opt bool);
 
+        "create_main_product": (CreateMainProductRequest) -> (opt bool);
+        "get_all_main_products": () -> (vec MainProduct) query;
 
 
 }

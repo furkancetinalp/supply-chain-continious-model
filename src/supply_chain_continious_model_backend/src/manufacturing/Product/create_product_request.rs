@@ -1,12 +1,13 @@
 
 use candid::{CandidType, Deserialize};
-use crate::entities::{product_status::ProductStatus, time::Time, unit::Unit};
+use crate::entities::{unit::Unit};
 
 #[derive(CandidType, Deserialize, Clone)]
-pub(crate) struct CreateProductRequest{
-    pub name:String, //product name
-    pub price : u64,
-    pub unit: Unit,
+pub struct CreateProductRequest{
+    // pub name:String, //product name
+    // pub price : u64,
+    pub barcode :String,
+    // pub unit: Unit,
 }
 
 
