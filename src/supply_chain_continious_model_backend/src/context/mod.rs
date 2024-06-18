@@ -4,6 +4,8 @@ use std::collections::HashMap;
 use crate::entities::demand_planning::Demand;
 use crate::entities::manufacturing::main_product::MainProduct;
 use crate::entities::manufacturing::product::{self, Product};
+use crate::entities::orders::order::Order;
+use crate::entities::orders::order_detail::OrderDetail;
 use crate::entities::procurement_warehouse::raw_material_warehouse::RawMaterialWarehouse;
 use crate::entities::raw_material_planning::RawMaterial;
 use crate::entities::sourcing_and_procurement::raw_material_agreements::RawMaterialAggreement;
@@ -24,6 +26,10 @@ thread_local! {
     //MANUFACTURING
     pub static PRODUCTS: RefCell<HashMap<u32, Product>> = RefCell::default();
     pub static MAIN_PRODUCTS: RefCell<HashMap<u32, MainProduct>> = RefCell::default();
+    
+    //ORDER
+    pub static ORDERS: RefCell<HashMap<u32, Order>> = RefCell::default();
+    pub static ORDER_DETAILS: RefCell<HashMap<u32, OrderDetail>> = RefCell::default();
     
 
 }

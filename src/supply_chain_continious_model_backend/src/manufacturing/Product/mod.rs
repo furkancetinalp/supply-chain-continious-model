@@ -41,6 +41,17 @@ pub async fn get_all_main_products() -> Vec< MainProduct> {
     return data;
 }
 
+#[ic_cdk::query]
+pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
+    let data = MAIN_PRODUCTS.with(|products| {
+        let binding = products.borrow();
+        let filter = binding.iter()
+        .find(|& x| x.1.identity == ic_cdk::caller().to_string() && x.1.barcode==barcode).unwrap();
+        return filter.1.clone();
+    });
+
+    return data;
+}
 
 
 #[ic_cdk::update]
@@ -110,6 +121,7 @@ pub async fn get_all_created_products() -> Vec< Product> {
 
 }
 
+
 async fn product_create_process(request:CreateProductRequest,product_name:&str,quantity_per_product:u32) {
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
@@ -132,7 +144,8 @@ async fn product_create_process(request:CreateProductRequest,product_name:&str,q
 async fn check_if_already_produced(barcode:&str) -> (bool,Option<MainProduct>){
     MAIN_PRODUCTS.with(|products|{
         let products = products.borrow_mut();
-        let product =  (products.iter().find(|x| x.1.barcode==barcode));
+        let product =  (products.iter()
+            .find(|x| x.1.barcode==barcode && x.1.identity == ic_cdk::caller().to_string()));
         if  product.is_some(){
             return (true,Some(product.unwrap().1.clone()));
         }
@@ -145,7 +158,44 @@ async fn check_if_already_produced(barcode:&str) -> (bool,Option<MainProduct>){
 async fn update_product_stock(barcode:&str,quantity:i64) {
     MAIN_PRODUCTS.with(|products|{
         let mut products = products.borrow_mut();
-        let  item = products.iter_mut().find(|x| x.1.barcode==barcode).unwrap().1;
+        let  item = products.iter_mut()
+            .find(|x| x.1.barcode==barcode && x.1.identity == ic_cdk::caller().to_string())
+                .unwrap().1;
         item.total_amount =item.total_amount + quantity  as u64;
     });
 }
+
+
+#[ic_cdk::query]
+pub async fn assign_products_for_order(amount:u32,barcode:String) -> Option<Vec<Product>>{
+    let data = PRODUCTS.with(|products|{
+        let  products = products.borrow();
+        let  item:Vec<_> = products.iter().
+            filter(|x| x.1.barcode==barcode && x.1.status==ProductStatus::Approved && x.1.identity == ic_cdk::caller().to_string()).
+                take(amount.try_into().unwrap()).map(|x| x.1.clone())
+                    .collect();
+
+        return item;
+    });
+    if(data.len() < amount as usize){
+        return None;
+    }
+    else{
+        let id_list:Vec<u32> = data.iter().map(|x| x.id).clone().collect();
+        for id in id_list{
+            update_product_status(id,ProductStatus::Ordered).await;
+        }
+        return Some(data);
+    }
+}
+
+//SETTING PRODUCT STATUS
+#[ic_cdk::update]
+ pub async fn update_product_status(product_id:u32,status:ProductStatus) {
+     PRODUCTS.with(|products|{
+        let mut products = products.borrow_mut();
+        let  item = products.get_mut(&product_id).unwrap();
+        item.status = status;
+    });
+}
+

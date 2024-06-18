@@ -8,3 +8,5 @@ pub mod sourcing_and_procurement;
 pub mod procurement_warehouse;
 pub mod product_status;
 pub mod manufacturing;
+pub mod orders;
+pub mod order_status;

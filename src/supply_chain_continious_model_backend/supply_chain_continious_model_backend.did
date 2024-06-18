@@ -210,6 +210,49 @@ type MainProduct =
     };
 //END --- MANUFACTURING
 
+//START --- ORDERS
+type Order = 
+    record {
+        id: nat32;
+        identity:text;
+        barcode:text;
+        product_name: text;
+        customer_title:text;
+        address:text;
+        quantity:float32;
+        unit_price:float32;
+        total_price:float32;
+        order_date:text;
+        order_status:OrderStatus;
+        delivery_date:text;
+        created_date:text;
+        
+    };
+type CreateOrderRequest = 
+    record {
+        barcode:text;
+        customer_title:text;
+        address:text;
+        quantity:float32;
+        unit_price:float32;
+        total_price:float32;
+        order_date:text;
+    };
+
+ 
+ type OrderDetail = 
+    record {
+        id: nat32;
+        identity:text;
+        order_id: nat32;
+        product_id: nat32;
+        product_name:text;
+        quantity:float32;
+        price:float32;
+        created_date:text;
+    };
+
+//END --- ORDERS
 
 type Time = record{
     year:nat16;
@@ -242,7 +285,20 @@ type ProductStatus = variant {
     PendingApproval;
     Approved;
     Rejected;
+    Ordered;
+    Sold;
 };
+
+type OrderStatus = variant {
+    Received;
+    Processing;
+    Shipped;
+    Delivered;
+    Completed;
+    Rejected;
+    Cancelled;
+};
+
 
 service : {
     //START --- PLANNING
@@ -284,6 +340,15 @@ service : {
 
         "create_main_product": (CreateMainProductRequest) -> (opt bool);
         "get_all_main_products": () -> (vec MainProduct) query;
+        "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
 
-
+        "assign_products_for_order":(nat32,text) -> (opt vec Product);
+    
+    //START --- ORDERS
+        "create_order":(CreateOrderRequest) -> (opt bool);
+        "get_order_by_id" :(nat32) -> (Order);
+        "get_all_orders" : () -> (vec Order);
+        "get_order_details_by_order_id": (nat32) -> (vec OrderDetail);
+        "update_order" : (nat32,OrderStatus) -> (bool)
+    //END --- ORDERS
 }
