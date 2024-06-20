@@ -1,5 +1,8 @@
 pub(crate) mod add_yearly_demand_request;
 pub (crate) mod add_monthly_demand_request;
+pub (crate) mod update_yearly_demand_request;
+use update_yearly_demand_request::UpdateYearlyDemandRequest;
+
 use self::add_monthly_demand_request::AddMonthlyDemandRequest;
 use self::add_yearly_demand_request::AddYearlyDemandRequest;
 
@@ -8,6 +11,7 @@ use crate::context::DEMAND_PLAN_MAP;
 use crate::entities::period::Period;
 use crate::entities::time::Time;
 use crate::entities::demand_planning::Demand;
+use crate::entities::unit::Unit;
 
 
 //ADD DEMAND MONTHLY
@@ -58,7 +62,7 @@ use crate::entities::demand_planning::Demand;
         description:request.description,
         customer_group:request.customer_group,
         amount:request.amount,
-        unit:request.unit,
+        unit:Unit::Piece,
         created_date,
         from:Time { 
             year: request.from_year, 
@@ -90,4 +94,55 @@ pub async fn get_all_demand_plans() -> Vec< Demand> {
     });
 
     return data;
+}
+
+
+#[ic_cdk::query]
+ pub async fn get_demand_plan_by_id(id:u32) -> Demand {
+     let data = DEMAND_PLAN_MAP.with(|demand|{
+        let  demands = demand.borrow_mut();
+        let item = demands.get(&id).unwrap();
+        return item.clone();
+    });
+
+    return data;
+}
+#[ic_cdk::update]
+ pub async fn delete_demand_plan_by_id(id:u32) -> bool {
+     let data = DEMAND_PLAN_MAP.with(|demand|{
+        let mut demands = demand.borrow_mut();
+        let item = demands.remove(&id);
+        return item;
+    });
+    if( data.is_some()){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+//UPDATE DEMAND YEARLY 
+#[ic_cdk::update]
+ pub async fn updte_yearly_demand_plan(request: UpdateYearlyDemandRequest) -> bool {
+    let created_date = ic_cdk::api::time().to_string();
+    // let unique_id:u32 = idgenerator::create_id().await;
+    let data = get_demand_plan_by_id(request.id).await;
+
+    let data = Demand{
+        id:request.id,
+        identity:data.identity,
+        name:request.name,
+        description:request.description,
+        customer_group:request.customer_group,
+        amount:request.amount,
+        unit:Unit::Piece,
+        created_date,
+        from:data.from,
+        to:data.to,
+        period:Period::Year,
+    };
+    DEMAND_PLAN_MAP.with(|p| p.borrow_mut().insert(request.id, data));
+    return true;
 }
