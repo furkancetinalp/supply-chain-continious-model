@@ -13,7 +13,7 @@ import {
   Alert,
   useToast,
 } from '@chakra-ui/react';
-import { supply_chain_continious_model_backend } from '../../../../declarations/supply_chain_continious_model_backend';
+import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 
 export default function DataTableDemand() {
   const [data, setData] = useState(null);

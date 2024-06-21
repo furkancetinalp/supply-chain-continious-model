@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import Dashboard from './pages/Dashboard';
-import DataTableDemand from './components/contents/DataTableDemand';
+import DemandPlanning from './components/contents/Planning/DemandPlanning';
 import { Formik, useFormik } from 'formik';
 import {
   Flex,
@@ -21,7 +21,7 @@ const App = () => {
     { title: 'Dashboard', src: 'Chart_fill', item: <Dashboard /> },
     { title: 'Inbox', src: 'Chat', item: <Inbox /> },
     { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
-    { title: 'Demand Analysis ', src: 'Calendar', item: <DataTableDemand /> },
+    { title: 'Demand Analysis ', src: 'Calendar', item: <DemandPlanning /> },
     { title: 'Search', src: 'Search' },
     // { title: "Search", src: "Search" },
     // { title: "Search", src: "Search" },
@@ -41,11 +41,11 @@ const App = () => {
       <div
         className={` ${
           open ? 'w-72' : 'w-20'
-        } bg-dark-purple relative h-[138vh] p-5 pt-8 duration-300`}
+        } relative h-[138vh] bg-dark-purple p-5 pt-8 duration-300`}
       >
         <img
           src="control.png"
-          className={`border-dark-purple absolute -right-3 top-9 w-7 cursor-pointer rounded-full border-2 ${!open && 'rotate-180'}`}
+          className={`absolute -right-3 top-9 w-7 cursor-pointer rounded-full border-2 border-dark-purple ${!open && 'rotate-180'}`}
           onClick={() => setOpen(!open)}
         />
         <div className="flex items-center gap-x-4">
@@ -68,7 +68,7 @@ const App = () => {
             <li
               onClick={() => setSelected(index)}
               key={index}
-              className={`hover:bg-light-white flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-sm text-gray-300 ${Menu.gap ? 'mt-9' : 'mt-2'} ${
+              className={`flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-sm text-gray-300 hover:bg-light-white ${Menu.gap ? 'mt-9' : 'mt-2'} ${
                 selected === index && 'bg-light-white'
               } `}
             >
