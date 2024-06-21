@@ -15,28 +15,15 @@ import {
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../declarations/supply_chain_continious_model_backend';
 
-const DemandData = [
-  {
-    id: '1',
-    name: 'Dell v1 sales',
-    description: 'Dell v1 sales forecast is set to 50.000',
-    from_year: '2024',
-    amount: 50000,
-    customer_group: 'Corporation',
-  },
-  {
-    id: '2',
-    name: 'Dell v2 sales',
-    description: 'Dell v2 sales forecast is set to 120.000',
-    from_year: '2025',
-    amount: 120000,
-    customer_group: 'Government',
-  },
-];
-
 export default function DataTableDemand() {
   const [data, setData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
+  const [deletedData, setDeletedData] = useState(null);
+  const [addedData, setAddedData] = useState(null);
+  const [showModal, setShowModal] = React.useState(false);
+  const [itemId, setItemId] = React.useState(null);
+  const [showAddDemandModal, setShowAddDemandModal] = React.useState(false);
+
   // useEffect(() => {
   //   supply_chain_continious_model_backend
   //     .get_all_demand_plans()
@@ -45,6 +32,16 @@ export default function DataTableDemand() {
   //     .then((data) => console.log(data))
   //     .catch((err) => console.error('Custom err: ', err));
   // }, []);
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+  function addToast(result, message) {
+    toastIdRef.current = toast({
+      description: result,
+      colorScheme: result == 'success' ? 'green' : 'red',
+      status: result,
+      title: message,
+    });
+  }
 
   useEffect(
     function () {
@@ -56,20 +53,43 @@ export default function DataTableDemand() {
       }
       get_all_demand_plans();
     },
-    [updatedData],
+    [updatedData, deletedData, addedData],
   );
 
   // console.log(data);
 
-  const [showModal, setShowModal] = React.useState(false);
-  const [itemId, setItemId] = React.useState(null);
   function updateDemand(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
   }
-  console.log(showModal);
-  console.log(itemId);
+
+  function DeleteDemand(itemId) {
+    async function delete_demand_plan() {
+      const data =
+        await supply_chain_continious_model_backend.delete_demand_plan_by_id(
+          itemId,
+        );
+      console.log('silme sonucu', data);
+      if (data == true) {
+        setTimeout(() => {}, '1500');
+        addToast('success', 'Item is deleted!');
+        setDeletedData(itemId);
+      } else {
+        setTimeout(() => {}, '3000');
+        addToast('error', 'An error during delete!');
+      }
+    }
+    delete_demand_plan();
+  }
+
+  function AddDemand() {
+    setShowAddDemandModal(!showAddDemandModal);
+    setAddedData(null);
+  }
+
+  // console.log(showModal);
+  // console.log(itemId);
   return (
     <>
       <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
@@ -83,6 +103,7 @@ export default function DataTableDemand() {
         </div>
         <button
           type="button"
+          onClick={() => AddDemand()}
           className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#86efac] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           <svg
@@ -145,7 +166,10 @@ export default function DataTableDemand() {
                 >
                   Edit
                 </button>
-                <button className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600">
+                <button
+                  onClick={() => DeleteDemand(item.id)}
+                  className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
+                >
                   Delete
                 </button>
               </td>
@@ -160,6 +184,12 @@ export default function DataTableDemand() {
           itemId={itemId}
           data={data}
           setUpdatedData={setUpdatedData}
+        />
+      )}
+      {showAddDemandModal && (
+        <AddDemandModal
+          setShowAddDemandModal={setShowAddDemandModal}
+          setAddedData={setAddedData}
         />
       )}
     </>
@@ -209,12 +239,12 @@ function UpdateDemandModal({
             await supply_chain_continious_model_backend.update_yearly_demand_plan(
               model,
             );
-          console.log('güncelleme sonucu', data);
+          // console.log('update result', data);
           if (data == true) {
             setTimeout(() => {
               setShowModal(false);
-            }, '3000');
-            addToast('success', 'Success!');
+            }, '1500');
+            addToast('success', 'Item is updated');
             setUpdatedData(data);
           } else {
             setTimeout(() => {
@@ -315,6 +345,175 @@ function UpdateDemandModal({
                   </FormControl>
                   <Button type="submit" mt="4" width="full" colorScheme="blue">
                     Update
+                  </Button>
+                </form>
+              </Box>
+            </div>
+            {/*footer*/}
+            <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-6">
+              <button
+                className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+                type="button"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+              {/* <button
+                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+                onClick={() => setShowModal(false)}
+              >
+                Save Changes
+              </button> */}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
+    </>
+  );
+}
+
+function AddDemandModal({ setShowAddDemandModal, setAddedData }) {
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+  function addToast(result, message) {
+    toastIdRef.current = toast({
+      description: result,
+      colorScheme: result == 'success' ? 'green' : 'red',
+      status: result,
+      title: message,
+    });
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      year: new Date().getFullYear(),
+      name: '',
+      description: '',
+      amount: 0,
+      customer_group: '',
+    },
+    onSubmit: (values, bag) => {
+      let model = {
+        from_year: parseInt(values.year),
+        name: values.name,
+        description: values.description,
+        amount: Number(values.amount),
+        customer_group: values.customer_group,
+      };
+
+      try {
+        async function add_demand_plan() {
+          const data =
+            await supply_chain_continious_model_backend.add_yearly_demand_plan(
+              model,
+            );
+          if (data == true) {
+            setTimeout(() => {
+              setShowAddDemandModal(false);
+            }, '1500');
+            addToast('success', 'Item is added');
+            setAddedData(data);
+          } else {
+            setTimeout(() => {
+              setShowAddDemandModal(false);
+            }, '3000');
+            addToast('error', 'An error during add!');
+          }
+        }
+        add_demand_plan();
+      } catch (error) {
+        setTimeout(() => {
+          setShowAddDemandModal(false);
+        }, '3000');
+        addToast('error', 'Error!');
+      }
+    },
+  });
+  return (
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+        <div className="relative mx-auto my-6 w-auto max-w-3xl">
+          {/*content*/}
+          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+            {/*header*/}
+            <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
+              <h2 className="text-3xl font-semibold">Add Demand Plan</h2>
+              <button
+                className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
+                onClick={() => setShowModal(false)}
+              >
+                <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
+                  ×
+                </span>
+              </button>
+            </div>
+            {/*body*/}
+            <div className="relative flex-auto p-6">
+              <Box my={5} textAlign="left">
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl>
+                    <FormLabel>Year</FormLabel>
+                    <Input
+                      name="year"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.year}
+                      isInvalid={formik.touched.year && formik.errors.year}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      name="name"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.name}
+                      isInvalid={formik.touched.name && formik.errors.name}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Description</FormLabel>
+                    <Input
+                      name="description"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.description}
+                      isInvalid={
+                        formik.touched.description && formik.errors.description
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Amount</FormLabel>
+                    <Input
+                      name="amount"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.amount}
+                      isInvalid={formik.touched.amount && formik.errors.amount}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Customer Group</FormLabel>
+                    <Input
+                      name="customer_group"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.customer_group}
+                      isInvalid={
+                        formik.touched.customer_group &&
+                        formik.errors.customer_group
+                      }
+                    ></Input>
+                  </FormControl>
+                  <Button type="submit" mt="4" width="full" colorScheme="blue">
+                    Add
                   </Button>
                 </form>
               </Box>

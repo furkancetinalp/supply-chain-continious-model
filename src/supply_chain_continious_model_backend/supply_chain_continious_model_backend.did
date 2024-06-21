@@ -314,7 +314,7 @@ service : {
     //START --- PLANNING
         //DEMAND PLANNING
         "add_monthly_demand_plan": (AddMonthlyDemandRequest) -> (opt bool);
-        "add_yearly_demand_plan": (AddYearlyDemandRequest) -> (opt bool);
+        "add_yearly_demand_plan": (AddYearlyDemandRequest) -> (bool);
         "get_all_demand_plans": () -> (vec Demand) query;
         "get_demand_plan_by_id" : (nat32) -> (Demand) query;
         "delete_demand_plan_by_id" :(nat32) -> (bool);

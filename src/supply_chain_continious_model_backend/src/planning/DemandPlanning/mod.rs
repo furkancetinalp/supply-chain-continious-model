@@ -50,7 +50,7 @@ use crate::entities::unit::Unit;
 
 //ADD DEMAND YEARLY 
 #[ic_cdk::update]
- pub async fn add_yearly_demand_plan(request: AddYearlyDemandRequest) -> Option<bool> {
+ pub async fn add_yearly_demand_plan(request: AddYearlyDemandRequest) -> bool {
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
 
@@ -79,7 +79,9 @@ use crate::entities::unit::Unit;
         period:Period::Year,
     };
     DEMAND_PLAN_MAP.with(|p| p.borrow_mut().insert(unique_id, data));
-    return Some(true);
+    
+    return check_if_data_exists(unique_id).await;
+ 
 }
 
 
@@ -147,4 +149,19 @@ pub async fn get_all_demand_plans() -> Vec< Demand> {
     data.to.year=request.from_year+1;
     DEMAND_PLAN_MAP.with(|p| p.borrow_mut().insert(request.id, data));
     return true;
+}
+
+pub async fn check_if_data_exists(id:u32) -> bool {
+    let data = DEMAND_PLAN_MAP.with(|demand|{
+       let  demands = demand.borrow_mut();
+       let item = demands.get(&id);
+       if item.is_none(){
+        return false;
+       }
+       else{
+        return true;
+       }
+   });
+
+   return data;
 }
