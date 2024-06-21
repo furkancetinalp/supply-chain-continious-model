@@ -9,7 +9,7 @@ pub(crate) struct AddRawMaterialPlanningRequest{
     pub requested_delivery_time:u8, //required date to be delivered
     pub urgency:String,
     pub warehouse_name:String,
-    pub description:String,
+    // pub description:String,
     pub date:String,
 }
 
