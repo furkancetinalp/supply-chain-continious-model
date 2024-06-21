@@ -11,11 +11,12 @@ pub(crate) struct RawMaterialOffer{
     pub unit_price : f64,
     pub total_price : f64,
     pub company_name:String, //company that makes the offer ***
-    pub delivery_time:u8, // date to be delivered
     pub warehouse_name:String, 
     pub unit: Unit,
-    pub delivery_date:Time,
+    pub requested_date:String,
+    pub delivery_date:String,
     pub created_date:String,
+    // pub delivery_time:u8, // date to be delivered
 
 }
 

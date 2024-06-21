@@ -3,7 +3,8 @@ use candid::{CandidType, Deserialize};
 use crate::entities::{time::Time, unit::Unit};
 
 #[derive(CandidType, Deserialize, Clone)]
-pub(crate) struct AddRawMaterialOfferRequest{
+pub struct UpdateRawMaterialOfferRequest{
+    pub id:u32,
     pub name:String, //product name
     pub amount: f64,
     pub unit_price : f64,

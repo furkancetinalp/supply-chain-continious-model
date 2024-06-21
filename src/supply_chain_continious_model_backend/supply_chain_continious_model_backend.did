@@ -99,14 +99,25 @@ type AddRawMaterialOfferRequest =
         name: text;
         amount: float64;
         unit_price: float64;
-        total_price: float64;
         company_name:text;
-        delivery_time:nat8;
         warehouse_name:text;
-        unit: Unit;
-        delivery_date :Time;
+        requested_date:text;
+        delivery_date :text;
+        // total_price: float64;
+        // delivery_time:nat8;
+        // unit: Unit;
     };
-
+type UpdateRawMaterialOfferRequest = 
+    record {
+        id:nat32;
+        name: text;
+        amount: float64;
+        unit_price: float64;
+        company_name:text;
+        warehouse_name:text;
+        requested_date:text;
+        delivery_date :text;
+    };
 type RawMaterialOffer = 
     record {
         identity:text;
@@ -116,11 +127,12 @@ type RawMaterialOffer =
         unit_price: float64;
         total_price: float64;
         company_name:text;
-        delivery_time:nat8;
         warehouse_name:text;
         unit: Unit;
-        delivery_date :Time;
+        requested_date:text;
+        delivery_date :text;
         created_date:text;
+        // delivery_time:nat8;
     };
 
 //RAW MATERIAL AGREEMENTS
@@ -342,6 +354,10 @@ service : {
         //RAW MATERIAL OFFERS
         "add_raw_material_offer": (AddRawMaterialOfferRequest) -> (opt bool);
         "get_all_raw_material_offers": () -> (vec RawMaterialOffer) query;
+        "get_raw_material_offer_by_id" : (nat32) -> (RawMaterialOffer) query;
+        "delete_raw_material_offer_by_id" :(nat32) -> (bool);
+        "update_raw_material_offer": (UpdateRawMaterialOfferRequest) -> (bool);
+
 
         //RAW MATERIAL AGREEMENTS
         "add_raw_material_agreement": (AddRawMaterialAgreementRequest) -> (opt bool);
