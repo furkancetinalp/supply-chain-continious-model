@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Dashboard from './pages/Dashboard';
 import DemandPlanning from './components/contents/Planning/DemandPlanning';
+import RawMaterialPlanning from './components/contents/Planning/RawMaterialPlanning';
 import { Formik, useFormik } from 'formik';
 import {
   Flex,
@@ -22,6 +23,11 @@ const App = () => {
     { title: 'Inbox', src: 'Chat', item: <Inbox /> },
     { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
     { title: 'Demand Analysis ', src: 'Calendar', item: <DemandPlanning /> },
+    {
+      title: 'Raw Material Analysis ',
+      src: 'Calendar',
+      item: <RawMaterialPlanning />,
+    },
     { title: 'Search', src: 'Search' },
     // { title: "Search", src: "Search" },
     // { title: "Search", src: "Search" },

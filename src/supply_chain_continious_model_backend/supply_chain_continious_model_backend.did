@@ -55,16 +55,16 @@ type RawMaterial =
         id: nat32;
         name: text;
         amount: float64;
-        urgency: Urgency;
+        urgency: text;
         requested_delivery_time:nat8;
         warehouse_name:text;
         description: text;
         unit: Unit;
-        from :Time;
-        to : Time;
+        date :text;
         created_date:text;
 
     };
+
 
 
 //RAW MATERIAL PLANNING
@@ -72,16 +72,25 @@ type AddRawMaterialPlanningRequest =
     record {
         name: text;
         amount: float64;
-        urgency: Urgency;
+        urgency: text;
         requested_delivery_time:nat8;
         warehouse_name:text;
         description: text;
-        unit: Unit;
-        from :Time;
-        to : Time;
+        date :text;
     };
-
-
+ 
+type UpdateRawMaterialPlanRequest = 
+    record {
+        id:nat32;
+        name: text;
+        amount: float64;
+        requested_delivery_time:nat8;
+        urgency: text;
+        warehouse_name:text;
+        description: text;
+        date :text;
+    };
+ 
 //START --- SOURCING AND PROCUREMENT
 
 //RAW MATERIAL OFFERS
@@ -319,9 +328,13 @@ service : {
         "get_demand_plan_by_id" : (nat32) -> (Demand) query;
         "delete_demand_plan_by_id" :(nat32) -> (bool);
         "update_yearly_demand_plan": (UpdateYearlyDemandRequest) -> (bool);
+
         //RAW MATERIAL PLANNING
-        "add_raw_material_plan": (AddRawMaterialPlanningRequest) -> (opt bool);
+        "add_raw_material_plan": (AddRawMaterialPlanningRequest) -> (bool);
         "get_all_raw_material_plans": () -> (vec RawMaterial) query;
+        "get_raw_material_plan_by_id" : (nat32) -> (RawMaterial) query;
+        "delete_raw_material_plan_by_id" :(nat32) -> (bool);
+        "update_raw_material_plan": (UpdateRawMaterialPlanRequest) -> (bool);
     //END --- PLANNING
 
 
