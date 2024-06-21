@@ -125,12 +125,12 @@ pub async fn get_all_demand_plans() -> Vec< Demand> {
 
 //UPDATE DEMAND YEARLY 
 #[ic_cdk::update]
- pub async fn updte_yearly_demand_plan(request: UpdateYearlyDemandRequest) -> bool {
+ pub async fn update_yearly_demand_plan(request: UpdateYearlyDemandRequest) -> bool {
     let created_date = ic_cdk::api::time().to_string();
     // let unique_id:u32 = idgenerator::create_id().await;
     let data = get_demand_plan_by_id(request.id).await;
 
-    let data = Demand{
+    let mut data = Demand{
         id:request.id,
         identity:data.identity,
         name:request.name,
@@ -143,6 +143,8 @@ pub async fn get_all_demand_plans() -> Vec< Demand> {
         to:data.to,
         period:Period::Year,
     };
+    data.from.year=request.from_year;
+    data.to.year=request.from_year+1;
     DEMAND_PLAN_MAP.with(|p| p.borrow_mut().insert(request.id, data));
     return true;
 }

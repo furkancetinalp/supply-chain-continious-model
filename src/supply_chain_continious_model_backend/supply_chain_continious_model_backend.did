@@ -318,7 +318,7 @@ service : {
         "get_all_demand_plans": () -> (vec Demand) query;
         "get_demand_plan_by_id" : (nat32) -> (Demand) query;
         "delete_demand_plan_by_id" :(nat32) -> (bool);
-        "updte_yearly_demand_plan": (UpdateYearlyDemandRequest) -> (bool);
+        "update_yearly_demand_plan": (UpdateYearlyDemandRequest) -> (bool);
         //RAW MATERIAL PLANNING
         "add_raw_material_plan": (AddRawMaterialPlanningRequest) -> (opt bool);
         "get_all_raw_material_plans": () -> (vec RawMaterial) query;

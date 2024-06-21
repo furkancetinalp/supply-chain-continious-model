@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, useFormik } from 'formik';
 import {
   Flex,
@@ -13,6 +13,8 @@ import {
   Alert,
   useToast,
 } from '@chakra-ui/react';
+import { supply_chain_continious_model_backend } from '../../../../declarations/supply_chain_continious_model_backend';
+
 const DemandData = [
   {
     id: '1',
@@ -33,11 +35,38 @@ const DemandData = [
 ];
 
 export default function DataTableDemand() {
+  const [data, setData] = useState(null);
+  const [updatedData, setUpdatedData] = useState(null);
+  // useEffect(() => {
+  //   supply_chain_continious_model_backend
+  //     .get_all_demand_plans()
+  //     // .then((data) => ReservedHours(data))
+  //     .then((data) => setData(data))
+  //     .then((data) => console.log(data))
+  //     .catch((err) => console.error('Custom err: ', err));
+  // }, []);
+
+  useEffect(
+    function () {
+      async function get_all_demand_plans() {
+        const data =
+          await supply_chain_continious_model_backend.get_all_demand_plans();
+        setData(data);
+        console.log(data);
+      }
+      get_all_demand_plans();
+    },
+    [updatedData],
+  );
+
+  // console.log(data);
+
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
   function updateDemand(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
+    setUpdatedData(null);
   }
   console.log(showModal);
   console.log(itemId);
@@ -93,9 +122,11 @@ export default function DataTableDemand() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {DemandData.map((item) => (
+          {data?.map((item) => (
             <tr key={item.id}>
-              <td className="whitespace-nowrap px-6 py-4">{item.from_year}</td>
+              <td className="whitespace-nowrap px-6 py-4">
+                {item?.from?.year}
+              </td>
               <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
               <td className="whitespace-nowrap px-6 py-4">
                 {item.description}
@@ -127,14 +158,22 @@ export default function DataTableDemand() {
           showModal={showModal}
           setShowModal={setShowModal}
           itemId={itemId}
+          data={data}
+          setUpdatedData={setUpdatedData}
         />
       )}
     </>
   );
 }
 
-function UpdateDemandModal({ showModal, setShowModal, itemId }) {
-  const data = DemandData.find((x) => x.id == itemId);
+function UpdateDemandModal({
+  showModal,
+  setShowModal,
+  itemId,
+  data,
+  setUpdatedData,
+}) {
+  const item = data.find((x) => x.id == itemId);
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -148,18 +187,49 @@ function UpdateDemandModal({ showModal, setShowModal, itemId }) {
 
   const formik = useFormik({
     initialValues: {
-      year: data.from_year,
-      name: data.name,
-      description: data.description,
-      amount: data.amount,
-      customer_group: data.customer_group,
+      year: item?.from?.year,
+      name: item.name,
+      description: item.description,
+      amount: item.amount,
+      customer_group: item.customer_group,
     },
     onSubmit: (values, bag) => {
-      setTimeout(() => {
-        console.log('Delayed for 1 second.');
-        setShowModal(false);
-      }, '3000');
-      addToast('success', 'Appointment is scheduled');
+      let model = {
+        id: parseInt(item.id),
+        name: values.name,
+        description: values.description,
+        customer_group: values.customer_group,
+        amount: Number(values.amount),
+        from_year: parseInt(values.year),
+      };
+
+      try {
+        async function update_demand_plan() {
+          const data =
+            await supply_chain_continious_model_backend.update_yearly_demand_plan(
+              model,
+            );
+          console.log('güncelleme sonucu', data);
+          if (data == true) {
+            setTimeout(() => {
+              setShowModal(false);
+            }, '3000');
+            addToast('success', 'Success!');
+            setUpdatedData(data);
+          } else {
+            setTimeout(() => {
+              setShowModal(false);
+            }, '3000');
+            addToast('error', 'An error during update!');
+          }
+        }
+        update_demand_plan();
+      } catch (error) {
+        setTimeout(() => {
+          setShowModal(false);
+        }, '3000');
+        addToast('error', 'Error!');
+      }
     },
   });
   return (
