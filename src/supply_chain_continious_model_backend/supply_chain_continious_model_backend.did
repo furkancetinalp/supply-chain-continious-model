@@ -199,6 +199,17 @@ type RawMaterialWarehouse =
         created_date:text;
     };
 
+
+type UpdateRawMaterialWarehouseRequest = 
+    record {
+        id:nat32;
+        name: text;
+        district: text;
+        province: text;
+        country: text;
+        location_detail: text;
+    };
+
 //END --- PROCUREMENT WAREHOUSE
 
 
@@ -379,20 +390,22 @@ service : {
 
     //START --- PROCUREMENT WAREHOUSE
         //RAW MATERIAL WAREHOUSE
-        "add_raw_material_warehouse": (AddRawMaterialWarehouseRequest) -> (opt bool);
+        "add_raw_material_warehouse": (AddRawMaterialWarehouseRequest) -> (bool);
         "get_all_raw_material_warehouses": () -> (vec RawMaterialWarehouse) query;
-
-
+        "get_raw_material_warehouse_by_id" : (nat32) -> (RawMaterialWarehouse) query;
+        "delete_raw_material_warehouse_by_id" :(nat32) -> (bool);
+        "update_raw_material_warehouse": (UpdateRawMaterialWarehouseRequest) -> (bool);
+        "check_if_warehouse_name_exists": (text) -> (bool);
     //END --- PROCUREMENT WAREHOUSE
+        "create_main_product": (CreateMainProductRequest) -> (opt bool);
+        "get_all_main_products": () -> (vec MainProduct) query;
+        "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
+
         "create_product": (CreateProductRequest) -> (opt bool);
         "create_bulk_product": (CreateProductRequest,quantity:nat32) -> (opt bool);
         "get_all_created_products": () -> (vec Product) query;
 
         "approve_product": (nat32,ProductStatus) -> (opt bool);
-
-        "create_main_product": (CreateMainProductRequest) -> (opt bool);
-        "get_all_main_products": () -> (vec MainProduct) query;
-        "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
 
         "assign_products_for_order":(nat32,text) -> (opt vec Product);
     

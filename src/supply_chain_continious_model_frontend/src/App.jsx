@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import RawMaterialOffers from './components/contents/SourcingAndProcurement/RawMaterialOffers';
 import RawMaterialAgreements from './components/contents/SourcingAndProcurement/RawMaterialAgreements';
+import RawMaterialWarehouse from './components/contents/ProcurementWarehouse/RawMaterialWarehouse';
 const App = () => {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -26,7 +27,7 @@ const App = () => {
     { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
     { title: 'Demand Analysis ', src: 'Calendar', item: <DemandPlanning /> },
     {
-      title: 'Raw Material Analysis ',
+      title: 'Raw Material Planning ',
       src: 'Calendar',
       item: <RawMaterialPlanning />,
     },
@@ -39,6 +40,11 @@ const App = () => {
       title: 'Raw Material Agreement ',
       src: 'Calendar',
       item: <RawMaterialAgreements />,
+    },
+    {
+      title: 'Raw Material Warehouse ',
+      src: 'Calendar',
+      item: <RawMaterialWarehouse />,
     },
     { title: 'Search', src: 'Search' },
     // { title: "Search", src: "Search" },

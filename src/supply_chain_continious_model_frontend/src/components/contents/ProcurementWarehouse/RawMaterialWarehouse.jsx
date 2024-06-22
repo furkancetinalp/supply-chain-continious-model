@@ -15,15 +15,17 @@ import {
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 
-export default function RawMaterialPlanning() {
+export default function RawMaterialWarehouse() {
   const [data, setData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
   const [deletedData, setDeletedData] = useState(null);
   const [addedData, setAddedData] = useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
-  const [showAddRawMaterialPlanModal, setShowAddRawMaterialPlanModal] =
-    React.useState(false);
+  const [
+    showAddRawMaterialWarehouseModal,
+    setShowAddRawMaterialWarehouseModal,
+  ] = React.useState(false);
 
   const toast = useToast();
   const toastIdRef = React.useRef();
@@ -38,32 +40,31 @@ export default function RawMaterialPlanning() {
 
   useEffect(
     function () {
-      async function get_all_raw_material_plans() {
+      async function get_all_raw_material_warehouses() {
         const data =
-          await supply_chain_continious_model_backend.get_all_raw_material_plans();
+          await supply_chain_continious_model_backend.get_all_raw_material_warehouses();
         setData(data);
         console.log(data);
       }
-      get_all_raw_material_plans();
+      get_all_raw_material_warehouses();
     },
     [updatedData, deletedData, addedData],
   );
 
   // console.log(data);
 
-  function updateRawMaterialPlan(itemId) {
+  function updateRawMaterialWarehouse(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
   }
 
-  function DeleteRawMaterialPlan(itemId) {
-    async function delete_raw_material_plan() {
+  function DeleteRawMaterialWarehouse(itemId) {
+    async function delete_raw_material_warehouse() {
       const data =
-        await supply_chain_continious_model_backend.delete_raw_material_plan_by_id(
+        await supply_chain_continious_model_backend.delete_raw_material_warehouse_by_id(
           itemId,
         );
-      //   console.log('silme sonucu', data);
       if (data == true) {
         setTimeout(() => {}, '1000');
         addToast('success', 'Item is deleted!');
@@ -73,11 +74,11 @@ export default function RawMaterialPlanning() {
         addToast('error', 'An error during delete!');
       }
     }
-    delete_raw_material_plan();
+    delete_raw_material_warehouse();
   }
 
-  function AddRawMaterial() {
-    setShowAddRawMaterialPlanModal(!showAddRawMaterialPlanModal);
+  function AddRawMaterialWarehouse() {
+    setShowAddRawMaterialWarehouseModal(!showAddRawMaterialWarehouseModal);
     setAddedData(null);
   }
 
@@ -86,15 +87,15 @@ export default function RawMaterialPlanning() {
       <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
           <h5 className="mr-3 font-semibold dark:text-white">
-            Raw Material Planning
+            Raw Material Warehouses
           </h5>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage all your existing raw material plans
+            Manage all your existing raw material warehouses
           </p>
         </div>
         <button
           type="button"
-          onClick={() => AddRawMaterial()}
+          onClick={() => AddRawMaterialWarehouse()}
           className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#86efac] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           <svg
@@ -106,7 +107,7 @@ export default function RawMaterialPlanning() {
           >
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
-          New Raw Material Plan
+          New Raw Material Warehouse
         </button>
       </div>
 
@@ -114,55 +115,43 @@ export default function RawMaterialPlanning() {
         <thead>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Date
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Requested Delivery Time
+              District
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Amount
+              Province
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Urgency
+              Country
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Warehouse
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Action
+              Location Detail
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {data?.map((item) => (
             <tr key={item.id}>
-              <td className="whitespace-nowrap px-6 py-4">{item?.date}</td>
               <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
+              <td className="whitespace-nowrap px-6 py-4">{item.district}</td>
+              <td className="whitespace-nowrap px-6 py-4">{item.province}</td>
+              <td className="whitespace-nowrap px-6 py-4">{item.country}</td>
+
               <td className="whitespace-nowrap px-6 py-4">
-                {item.requested_delivery_time} days
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">{item.amount}</td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                  {item.urgency}
-                </span>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                {item.warehouse_name}
+                {item.location_detail}
               </td>
 
               <td className="whitespace-nowrap px-6 py-4">
                 <button
-                  onClick={() => updateRawMaterialPlan(item.id)}
+                  onClick={() => updateRawMaterialWarehouse(item.id)}
                   className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => DeleteRawMaterialPlan(item.id)}
+                  onClick={() => DeleteRawMaterialWarehouse(item.id)}
                   className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
                 >
                   Delete
@@ -173,7 +162,7 @@ export default function RawMaterialPlanning() {
         </tbody>
       </table>
       {showModal && (
-        <UpdateRawMaterialPlanModal
+        <UpdateRawMaterialWarehouseModal
           showModal={showModal}
           setShowModal={setShowModal}
           itemId={itemId}
@@ -181,10 +170,12 @@ export default function RawMaterialPlanning() {
           setUpdatedData={setUpdatedData}
         />
       )}
-      {showAddRawMaterialPlanModal && (
-        <AddRawMaterialPlanModal
+      {showAddRawMaterialWarehouseModal && (
+        <AddRawMaterialWarehouseModal
           setShowModal={setShowModal}
-          setShowAddRawMaterialPlanModal={setShowAddRawMaterialPlanModal}
+          setShowAddRawMaterialWarehouseModal={
+            setShowAddRawMaterialWarehouseModal
+          }
           setAddedData={setAddedData}
         />
       )}
@@ -192,7 +183,7 @@ export default function RawMaterialPlanning() {
   );
 }
 
-function UpdateRawMaterialPlanModal({
+function UpdateRawMaterialWarehouseModal({
   showModal,
   setShowModal,
   itemId,
@@ -213,46 +204,28 @@ function UpdateRawMaterialPlanModal({
 
   const formik = useFormik({
     initialValues: {
-      date: item?.date,
       name: item.name,
-      amount: item.amount,
-      requested_delivery_time: item.requested_delivery_time,
-      urgency: item.urgency,
-      warehouse_name: item.warehouse_name,
+      district: item.district,
+      province: item.province,
+      country: item.country,
+      location_detail: item.location_detail,
     },
     onSubmit: (values, bag) => {
       let model = {
         id: parseInt(item.id),
         name: values.name,
-        amount: Number(values.amount),
-        requested_delivery_time: parseInt(item.requested_delivery_time),
-        urgency: values.urgency,
-        warehouse_name: values.warehouse_name,
-        date: values.date,
+        district: values.district,
+        province: values.province,
+        country: values.country,
+        location_detail: values.location_detail,
       };
 
       try {
-        async function update_raw_material_plan() {
-          const check =
-            await supply_chain_continious_model_backend.check_if_warehouse_name_exists(
-              model.warehouse_name,
-            );
-          if (check == false) {
-            setTimeout(() => {
-              setShowModal(false);
-            }, '3000');
-            addToast(
-              'error',
-              'Warehouse does not exist! Please add a new one first!',
-            );
-            return false;
-          }
+        async function update_raw_material_warehouse() {
           const data =
-            await supply_chain_continious_model_backend.update_raw_material_plan(
+            await supply_chain_continious_model_backend.update_raw_material_warehouse(
               model,
             );
-
-          // console.log('update result', data);
           if (data == true) {
             setTimeout(() => {
               setShowModal(false);
@@ -266,7 +239,7 @@ function UpdateRawMaterialPlanModal({
             addToast('error', 'An error during update!');
           }
         }
-        update_raw_material_plan();
+        update_raw_material_warehouse();
       } catch (error) {
         setTimeout(() => {
           setShowModal(false);
@@ -284,7 +257,7 @@ function UpdateRawMaterialPlanModal({
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
               <h2 className="text-3xl font-semibold">
-                Update Raw Material Plan
+                Update Raw Material Warehouse
               </h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
@@ -299,17 +272,6 @@ function UpdateRawMaterialPlanModal({
             <div className="relative flex-auto p-6">
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
-                  <FormControl>
-                    <FormLabel>Date</FormLabel>
-                    <Input
-                      name="date"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.date}
-                      isInvalid={formik.touched.date && formik.errors.date}
-                    ></Input>
-                  </FormControl>
-
                   <FormControl mt="2">
                     <FormLabel>Name</FormLabel>
                     <Input
@@ -321,54 +283,55 @@ function UpdateRawMaterialPlanModal({
                     ></Input>
                   </FormControl>
 
-                  <FormControl mt="2">
-                    <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <FormLabel>District</FormLabel>
                     <Input
-                      name="amount"
+                      name="district"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.amount}
-                      isInvalid={formik.touched.amount && formik.errors.amount}
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Requested Delivery Time</FormLabel>
-                    <Input
-                      name="requested_delivery_time"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.requested_delivery_time}
+                      value={formik.values.district}
                       isInvalid={
-                        formik.touched.requested_delivery_time &&
-                        formik.errors.requested_delivery_time
+                        formik.touched.district && formik.errors.district
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Urgency</FormLabel>
+                    <FormLabel>Province</FormLabel>
                     <Input
-                      name="urgency"
+                      name="province"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.urgency}
+                      value={formik.values.province}
                       isInvalid={
-                        formik.touched.urgency && formik.errors.urgency
+                        formik.touched.province && formik.errors.province
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Warehouse</FormLabel>
+                    <FormLabel>Country</FormLabel>
                     <Input
-                      name="warehouse_name"
+                      name="country"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.warehouse_name}
+                      value={formik.values.country}
                       isInvalid={
-                        formik.touched.warehouse_name &&
-                        formik.errors.warehouse_name
+                        formik.touched.country && formik.errors.country
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Detail</FormLabel>
+                    <Input
+                      name="location_detail"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.location_detail}
+                      isInvalid={
+                        formik.touched.location_detail &&
+                        formik.errors.location_detail
                       }
                     ></Input>
                   </FormControl>
@@ -404,9 +367,9 @@ function UpdateRawMaterialPlanModal({
   );
 }
 
-function AddRawMaterialPlanModal({
+function AddRawMaterialWarehouseModal({
   setShowModal,
-  setShowAddRawMaterialPlanModal,
+  setShowAddRawMaterialWarehouseModal,
   setAddedData,
 }) {
   const toast = useToast();
@@ -422,60 +385,44 @@ function AddRawMaterialPlanModal({
 
   const formik = useFormik({
     initialValues: {
-      date: new Date().toJSON().slice(0, 10),
       name: '',
-      amount: 0,
-      requested_delivery_time: 30,
-      urgency: 'medium',
-      warehouse_name: '',
+      district: '',
+      province: '',
+      country: '',
+      location_detail: '',
     },
     onSubmit: (values, bag) => {
       let model = {
         name: values.name,
-        amount: Number(values.amount),
-        requested_delivery_time: parseInt(values.requested_delivery_time),
-        urgency: values.urgency,
-        warehouse_name: values.warehouse_name,
-        date: values.date,
+        district: values.district,
+        province: values.province,
+        country: values.country,
+        location_detail: values.location_detail,
       };
 
       try {
-        async function add_raw_material_plan() {
-          const check =
-            await supply_chain_continious_model_backend.check_if_warehouse_name_exists(
-              model.warehouse_name,
-            );
-          if (check == false) {
-            setTimeout(() => {
-              // setShowAddRawMaterialPlanModal(false);
-            }, '3000');
-            addToast(
-              'error',
-              'Warehouse does not exist! Please add a new one first!',
-            );
-            return false;
-          }
+        async function add_raw_material_warehouse() {
           const data =
-            await supply_chain_continious_model_backend.add_raw_material_plan(
+            await supply_chain_continious_model_backend.add_raw_material_warehouse(
               model,
             );
           if (data == true) {
             setTimeout(() => {
-              setShowAddRawMaterialPlanModal(false);
+              setShowAddRawMaterialWarehouseModal(false);
             }, '1000');
             addToast('success', 'Item is added');
             setAddedData(data);
           } else {
             setTimeout(() => {
-              setShowAddRawMaterialPlanModal(false);
+              setShowAddRawMaterialWarehouseModal(false);
             }, '3000');
             addToast('error', 'An error during add!');
           }
         }
-        add_raw_material_plan();
+        add_raw_material_warehouse();
       } catch (error) {
         setTimeout(() => {
-          setShowAddRawMaterialPlanModal(false);
+          setShowAddRawMaterialWarehouseModal(false);
         }, '3000');
         addToast('error', 'Error!');
       }
@@ -489,7 +436,9 @@ function AddRawMaterialPlanModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">Add Raw Material Plan</h2>
+              <h2 className="text-3xl font-semibold">
+                Add Raw Material Warehouse
+              </h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -503,17 +452,6 @@ function AddRawMaterialPlanModal({
             <div className="relative flex-auto p-6">
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
-                  <FormControl>
-                    <FormLabel>Date</FormLabel>
-                    <Input
-                      name="date"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.date}
-                      isInvalid={formik.touched.date && formik.errors.date}
-                    ></Input>
-                  </FormControl>
-
                   <FormControl mt="2">
                     <FormLabel>Name</FormLabel>
                     <Input
@@ -525,54 +463,55 @@ function AddRawMaterialPlanModal({
                     ></Input>
                   </FormControl>
 
-                  <FormControl mt="2">
-                    <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <FormLabel>District</FormLabel>
                     <Input
-                      name="amount"
+                      name="district"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.amount}
-                      isInvalid={formik.touched.amount && formik.errors.amount}
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Requested Delivery Time</FormLabel>
-                    <Input
-                      name="requested_delivery_time"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.requested_delivery_time}
+                      value={formik.values.district}
                       isInvalid={
-                        formik.touched.requested_delivery_time &&
-                        formik.errors.requested_delivery_time
+                        formik.touched.district && formik.errors.district
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Urgency</FormLabel>
+                    <FormLabel>Province</FormLabel>
                     <Input
-                      name="urgency"
+                      name="province"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.urgency}
+                      value={formik.values.province}
                       isInvalid={
-                        formik.touched.urgency && formik.errors.urgency
+                        formik.touched.province && formik.errors.province
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Warehouse</FormLabel>
+                    <FormLabel>Country</FormLabel>
                     <Input
-                      name="warehouse_name"
+                      name="country"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.warehouse_name}
+                      value={formik.values.country}
                       isInvalid={
-                        formik.touched.warehouse_name &&
-                        formik.errors.warehouse_name
+                        formik.touched.country && formik.errors.country
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Detail</FormLabel>
+                    <Input
+                      name="location_detail"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.location_detail}
+                      isInvalid={
+                        formik.touched.location_detail &&
+                        formik.errors.location_detail
                       }
                     ></Input>
                   </FormControl>
@@ -588,17 +527,10 @@ function AddRawMaterialPlanModal({
               <button
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
-                onClick={() => setShowAddRawMaterialPlanModal(false)}
+                onClick={() => setShowAddRawMaterialWarehouseModal(false)}
               >
                 Close
               </button>
-              {/* <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Save Changes
-              </button> */}
             </div>
           </div>
         </div>
