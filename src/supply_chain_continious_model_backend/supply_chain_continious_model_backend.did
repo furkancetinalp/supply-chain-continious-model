@@ -352,7 +352,7 @@ service : {
 
     //START --- SOURCING AND PROCUREMENT
         //RAW MATERIAL OFFERS
-        "add_raw_material_offer": (AddRawMaterialOfferRequest) -> (opt bool);
+        "add_raw_material_offer": (AddRawMaterialOfferRequest) -> ( bool);
         "get_all_raw_material_offers": () -> (vec RawMaterialOffer) query;
         "get_raw_material_offer_by_id" : (nat32) -> (RawMaterialOffer) query;
         "delete_raw_material_offer_by_id" :(nat32) -> (bool);

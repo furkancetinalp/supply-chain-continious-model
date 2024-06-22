@@ -6,7 +6,7 @@ use crate::{context::RAW_MATERIAL_OFFERS,entities::{sourcing_and_procurement::ra
 use super::idgenerator;
 
 #[ic_cdk::update]
- pub async fn add_raw_material_offer(request: AddRawMaterialOfferRequest) -> Option<bool> {
+ pub async fn add_raw_material_offer(request: AddRawMaterialOfferRequest) -> bool {
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
     let user_id = ic_cdk::caller();
@@ -27,7 +27,7 @@ use super::idgenerator;
         // delivery_time:request.delivery_time,
     };
     RAW_MATERIAL_OFFERS.with(|p| p.borrow_mut().insert(unique_id, data));
-    return Some(true);
+    return check_if_data_exists(unique_id).await;
 }
 
 //GET ALL

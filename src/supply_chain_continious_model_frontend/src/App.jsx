@@ -15,6 +15,7 @@ import {
   Alert,
   useToast,
 } from '@chakra-ui/react';
+import RawMaterialOffers from './components/contents/SourcingAndProcurement/RawMaterialOffers';
 const App = () => {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -27,6 +28,11 @@ const App = () => {
       title: 'Raw Material Analysis ',
       src: 'Calendar',
       item: <RawMaterialPlanning />,
+    },
+    {
+      title: 'Raw Material Offers ',
+      src: 'Calendar',
+      item: <RawMaterialOffers />,
     },
     { title: 'Search', src: 'Search' },
     // { title: "Search", src: "Search" },

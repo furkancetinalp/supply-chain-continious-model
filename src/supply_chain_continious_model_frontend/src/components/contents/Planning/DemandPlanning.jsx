@@ -188,6 +188,7 @@ export default function DemandPlanning() {
       )}
       {showAddDemandModal && (
         <AddDemandModal
+          setShowModal={setShowModal}
           setShowAddDemandModal={setShowAddDemandModal}
           setAddedData={setAddedData}
         />
@@ -374,7 +375,7 @@ function UpdateDemandModal({
   );
 }
 
-function AddDemandModal({ setShowAddDemandModal, setAddedData }) {
+function AddDemandModal({ setShowAddDemandModal, setAddedData, setShowModal }) {
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -512,7 +513,7 @@ function AddDemandModal({ setShowAddDemandModal, setAddedData }) {
                       }
                     ></Input>
                   </FormControl>
-                  <Button type="submit" mt="4" width="full" colorScheme="blue">
+                  <Button type="submit" mt="4" width="full" colorScheme="green">
                     Add
                   </Button>
                 </form>
@@ -523,7 +524,7 @@ function AddDemandModal({ setShowAddDemandModal, setAddedData }) {
               <button
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowAddDemandModal(false)}
               >
                 Close
               </button>

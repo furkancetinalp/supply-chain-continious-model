@@ -15,14 +15,14 @@ import {
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 
-export default function RawMaterialPlanning() {
+export default function RawMaterialOffers() {
   const [data, setData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
   const [deletedData, setDeletedData] = useState(null);
   const [addedData, setAddedData] = useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
-  const [showAddRawMaterialPlanModal, setShowAddRawMaterialPlanModal] =
+  const [showAddRawMaterialOfferModal, setShowAddRawMaterialOfferModal] =
     React.useState(false);
 
   // useEffect(() => {
@@ -46,32 +46,31 @@ export default function RawMaterialPlanning() {
 
   useEffect(
     function () {
-      async function get_all_raw_material_plans() {
+      async function get_all_raw_material_offers() {
         const data =
-          await supply_chain_continious_model_backend.get_all_raw_material_plans();
+          await supply_chain_continious_model_backend.get_all_raw_material_offers();
         setData(data);
         console.log(data);
       }
-      get_all_raw_material_plans();
+      get_all_raw_material_offers();
     },
     [updatedData, deletedData, addedData],
   );
 
   // console.log(data);
 
-  function updateRawMaterialPlan(itemId) {
+  function updateRawMaterialOffer(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
   }
 
-  function DeleteRawMaterialPlan(itemId) {
-    async function delete_raw_material_plan() {
+  function DeleteRawMaterialOffer(itemId) {
+    async function delete_raw_material_offer() {
       const data =
-        await supply_chain_continious_model_backend.delete_raw_material_plan_by_id(
+        await supply_chain_continious_model_backend.delete_raw_material_offer_by_id(
           itemId,
         );
-      //   console.log('silme sonucu', data);
       if (data == true) {
         setTimeout(() => {}, '1000');
         addToast('success', 'Item is deleted!');
@@ -81,11 +80,11 @@ export default function RawMaterialPlanning() {
         addToast('error', 'An error during delete!');
       }
     }
-    delete_raw_material_plan();
+    delete_raw_material_offer();
   }
 
-  function AddRawMaterial() {
-    setShowAddRawMaterialPlanModal(!showAddRawMaterialPlanModal);
+  function AddRawMaterialOffer() {
+    setShowAddRawMaterialOfferModal(!showAddRawMaterialOfferModal);
     setAddedData(null);
   }
 
@@ -94,15 +93,15 @@ export default function RawMaterialPlanning() {
       <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
           <h5 className="mr-3 font-semibold dark:text-white">
-            Raw Material Planning
+            Raw Material Offers
           </h5>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage all your existing raw material plans
+            Manage all your existing raw material offers
           </p>
         </div>
         <button
           type="button"
-          onClick={() => AddRawMaterial()}
+          onClick={() => AddRawMaterialOffer()}
           className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#86efac] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           <svg
@@ -114,7 +113,7 @@ export default function RawMaterialPlanning() {
           >
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
-          New Raw Material Plan
+          New Raw Material Offer
         </button>
       </div>
 
@@ -122,22 +121,25 @@ export default function RawMaterialPlanning() {
         <thead>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Date
+              Request Date
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Requested Delivery Time
+              Delivery Date
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Amount
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Urgency
+              Company Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Warehouse
+              Unit Price
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              Total Price
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Action
@@ -147,30 +149,35 @@ export default function RawMaterialPlanning() {
         <tbody className="divide-y divide-gray-200 bg-white">
           {data?.map((item) => (
             <tr key={item.id}>
-              <td className="whitespace-nowrap px-6 py-4">{item?.date}</td>
+              <td className="whitespace-nowrap px-6 py-4">
+                {item?.requested_date}
+              </td>
               <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
               <td className="whitespace-nowrap px-6 py-4">
-                {item.requested_delivery_time} days
+                {item.delivery_date}
               </td>
               <td className="whitespace-nowrap px-6 py-4">{item.amount}</td>
               <td className="whitespace-nowrap px-6 py-4">
+                {item.company_name}
+              </td>
+              {/* <td className="whitespace-nowrap px-6 py-4">
                 <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                  {item.urgency}
+                  {item.company_name}
                 </span>
-              </td>
+              </td> */}
+              <td className="whitespace-nowrap px-6 py-4">{item.unit_price}</td>
               <td className="whitespace-nowrap px-6 py-4">
-                {item.warehouse_name}
+                {item.total_price}
               </td>
-
               <td className="whitespace-nowrap px-6 py-4">
                 <button
-                  onClick={() => updateRawMaterialPlan(item.id)}
+                  onClick={() => updateRawMaterialOffer(item.id)}
                   className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => DeleteRawMaterialPlan(item.id)}
+                  onClick={() => DeleteRawMaterialOffer(item.id)}
                   className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
                 >
                   Delete
@@ -181,7 +188,7 @@ export default function RawMaterialPlanning() {
         </tbody>
       </table>
       {showModal && (
-        <UpdateRawMaterialPlanModal
+        <UpdateRawMaterialOfferModal
           showModal={showModal}
           setShowModal={setShowModal}
           itemId={itemId}
@@ -189,10 +196,10 @@ export default function RawMaterialPlanning() {
           setUpdatedData={setUpdatedData}
         />
       )}
-      {showAddRawMaterialPlanModal && (
-        <AddRawMaterialPlanModal
+      {showAddRawMaterialOfferModal && (
+        <AddRawMaterialOfferModal
           setShowModal={setShowModal}
-          setShowAddRawMaterialPlanModal={setShowAddRawMaterialPlanModal}
+          setShowAddRawMaterialOfferModal={setShowAddRawMaterialOfferModal}
           setAddedData={setAddedData}
         />
       )}
@@ -200,7 +207,7 @@ export default function RawMaterialPlanning() {
   );
 }
 
-function UpdateRawMaterialPlanModal({
+function UpdateRawMaterialOfferModal({
   showModal,
   setShowModal,
   itemId,
@@ -221,31 +228,32 @@ function UpdateRawMaterialPlanModal({
 
   const formik = useFormik({
     initialValues: {
-      date: item?.date,
       name: item.name,
       amount: item.amount,
-      requested_delivery_time: item.requested_delivery_time,
-      urgency: item.urgency,
+      unit_price: item.unit_price,
+      company_name: item.company_name,
       warehouse_name: item.warehouse_name,
+      requested_date: item.requested_date,
+      delivery_date: item.delivery_date,
     },
     onSubmit: (values, bag) => {
       let model = {
         id: parseInt(item.id),
         name: values.name,
         amount: Number(values.amount),
-        requested_delivery_time: parseInt(item.requested_delivery_time),
-        urgency: values.urgency,
+        unit_price: Number(values.unit_price),
+        company_name: values.company_name,
         warehouse_name: values.warehouse_name,
-        date: values.date,
+        requested_date: values.requested_date,
+        delivery_date: values.delivery_date,
       };
 
       try {
-        async function update_raw_material_plan() {
+        async function update_raw_material_offer() {
           const data =
-            await supply_chain_continious_model_backend.update_raw_material_plan(
+            await supply_chain_continious_model_backend.update_raw_material_offer(
               model,
             );
-          // console.log('update result', data);
           if (data == true) {
             setTimeout(() => {
               setShowModal(false);
@@ -259,7 +267,7 @@ function UpdateRawMaterialPlanModal({
             addToast('error', 'An error during update!');
           }
         }
-        update_raw_material_plan();
+        update_raw_material_offer();
       } catch (error) {
         setTimeout(() => {
           setShowModal(false);
@@ -293,13 +301,16 @@ function UpdateRawMaterialPlanModal({
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl>
-                    <FormLabel>Date</FormLabel>
+                    <FormLabel>Requested Date</FormLabel>
                     <Input
-                      name="date"
+                      name="requested_date"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.date}
-                      isInvalid={formik.touched.date && formik.errors.date}
+                      value={formik.values.requested_date}
+                      isInvalid={
+                        formik.touched.requested_date &&
+                        formik.errors.requested_date
+                      }
                     ></Input>
                   </FormControl>
 
@@ -311,6 +322,20 @@ function UpdateRawMaterialPlanModal({
                       onBlur={formik.handleBlur}
                       value={formik.values.name}
                       isInvalid={formik.touched.name && formik.errors.name}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl>
+                    <FormLabel>Delivery Date</FormLabel>
+                    <Input
+                      name="delivery_date"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.delivery_date}
+                      isInvalid={
+                        formik.touched.delivery_date &&
+                        formik.errors.delivery_date
+                      }
                     ></Input>
                   </FormControl>
 
@@ -326,34 +351,34 @@ function UpdateRawMaterialPlanModal({
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Requested Delivery Time</FormLabel>
+                    <FormLabel>Company Name</FormLabel>
                     <Input
-                      name="requested_delivery_time"
+                      name="company_name"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.requested_delivery_time}
+                      value={formik.values.company_name}
                       isInvalid={
-                        formik.touched.requested_delivery_time &&
-                        formik.errors.requested_delivery_time
+                        formik.touched.company_name &&
+                        formik.errors.company_name
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Urgency</FormLabel>
+                    <FormLabel>Unit Price</FormLabel>
                     <Input
-                      name="urgency"
+                      name="unit_price"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.urgency}
+                      value={formik.values.unit_price}
                       isInvalid={
-                        formik.touched.urgency && formik.errors.urgency
+                        formik.touched.unit_price && formik.errors.unit_price
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Warehouse</FormLabel>
+                    <FormLabel>Warehouse Name</FormLabel>
                     <Input
                       name="warehouse_name"
                       onChange={formik.handleChange}
@@ -397,9 +422,9 @@ function UpdateRawMaterialPlanModal({
   );
 }
 
-function AddRawMaterialPlanModal({
+function AddRawMaterialOfferModal({
   setShowModal,
-  setShowAddRawMaterialPlanModal,
+  setShowAddRawMaterialOfferModal,
   setAddedData,
 }) {
   const toast = useToast();
@@ -418,43 +443,46 @@ function AddRawMaterialPlanModal({
       date: new Date().toJSON().slice(0, 10),
       name: '',
       amount: 0,
-      requested_delivery_time: 30,
-      urgency: 'medium',
+      unit_price: 0,
+      company_name: '',
       warehouse_name: '',
+      requested_date: new Date().toJSON().slice(0, 10),
+      delivery_date: '',
     },
     onSubmit: (values, bag) => {
       let model = {
         name: values.name,
         amount: Number(values.amount),
-        requested_delivery_time: parseInt(values.requested_delivery_time),
-        urgency: values.urgency,
+        unit_price: Number(values.unit_price),
+        company_name: values.company_name,
         warehouse_name: values.warehouse_name,
-        date: values.date,
+        requested_date: values.requested_date,
+        delivery_date: values.delivery_date,
       };
 
       try {
-        async function add_demand_plan() {
+        async function add_demand_offer() {
           const data =
-            await supply_chain_continious_model_backend.add_raw_material_plan(
+            await supply_chain_continious_model_backend.add_raw_material_offer(
               model,
             );
           if (data == true) {
             setTimeout(() => {
-              setShowAddRawMaterialPlanModal(false);
+              setShowAddRawMaterialOfferModal(false);
             }, '1000');
             addToast('success', 'Item is added');
             setAddedData(data);
           } else {
             setTimeout(() => {
-              setShowAddRawMaterialPlanModal(false);
+              setShowAddRawMaterialOfferModal(false);
             }, '3000');
             addToast('error', 'An error during add!');
           }
         }
-        add_demand_plan();
+        add_demand_offer();
       } catch (error) {
         setTimeout(() => {
-          setShowAddRawMaterialPlanModal(false);
+          setShowAddRawMaterialOfferModal(false);
         }, '3000');
         addToast('error', 'Error!');
       }
@@ -468,7 +496,7 @@ function AddRawMaterialPlanModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">Add Raw Material Plan</h2>
+              <h2 className="text-3xl font-semibold">Add Raw Material Offer</h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -483,13 +511,16 @@ function AddRawMaterialPlanModal({
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl>
-                    <FormLabel>Date</FormLabel>
+                    <FormLabel>Requested Date</FormLabel>
                     <Input
-                      name="date"
+                      name="requested_date"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.date}
-                      isInvalid={formik.touched.date && formik.errors.date}
+                      value={formik.values.requested_date}
+                      isInvalid={
+                        formik.touched.requested_date &&
+                        formik.errors.requested_date
+                      }
                     ></Input>
                   </FormControl>
 
@@ -501,6 +532,20 @@ function AddRawMaterialPlanModal({
                       onBlur={formik.handleBlur}
                       value={formik.values.name}
                       isInvalid={formik.touched.name && formik.errors.name}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl>
+                    <FormLabel>Delivery Date</FormLabel>
+                    <Input
+                      name="delivery_date"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.delivery_date}
+                      isInvalid={
+                        formik.touched.delivery_date &&
+                        formik.errors.delivery_date
+                      }
                     ></Input>
                   </FormControl>
 
@@ -516,34 +561,34 @@ function AddRawMaterialPlanModal({
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Requested Delivery Time</FormLabel>
+                    <FormLabel>Company Name</FormLabel>
                     <Input
-                      name="requested_delivery_time"
+                      name="company_name"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.requested_delivery_time}
+                      value={formik.values.company_name}
                       isInvalid={
-                        formik.touched.requested_delivery_time &&
-                        formik.errors.requested_delivery_time
+                        formik.touched.company_name &&
+                        formik.errors.company_name
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Urgency</FormLabel>
+                    <FormLabel>Unit Price</FormLabel>
                     <Input
-                      name="urgency"
+                      name="unit_price"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.urgency}
+                      value={formik.values.unit_price}
                       isInvalid={
-                        formik.touched.urgency && formik.errors.urgency
+                        formik.touched.unit_price && formik.errors.unit_price
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Warehouse</FormLabel>
+                    <FormLabel>Warehouse Name</FormLabel>
                     <Input
                       name="warehouse_name"
                       onChange={formik.handleChange}
@@ -567,7 +612,7 @@ function AddRawMaterialPlanModal({
               <button
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
-                onClick={() => setShowAddRawMaterialPlanModal(false)}
+                onClick={() => setShowAddRawMaterialOfferModal(false)}
               >
                 Close
               </button>
