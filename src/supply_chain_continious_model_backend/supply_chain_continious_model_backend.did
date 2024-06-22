@@ -141,13 +141,22 @@ type AddRawMaterialAgreementRequest =
         product_name: text;
         amount: float64;
         unit_price: float64;
-        total_price: float64;
         company_name:text;
-        agreement_date:Time;
-        delivery_date:Time;
-        delivery_time : nat8;
+        agreement_date:text;
+        delivery_date:text;
         warehouse_name:text;
-        unit: Unit;
+    };
+
+type UpdateRawMaterialAgreementRequest = 
+    record {
+        id:nat32;
+        product_name: text;
+        amount: float64;
+        unit_price: float64;
+        company_name:text;
+        agreement_date:text;
+        delivery_date:text;
+        warehouse_name:text;
     };
 type RawMaterialAgreement = 
     record {
@@ -158,9 +167,8 @@ type RawMaterialAgreement =
         unit_price: float64;
         total_price: float64;
         company_name:text;
-        agreement_date:Time;
-        delivery_date:Time;
-        delivery_time : nat8;
+        agreement_date:text;
+        delivery_date:text;
         warehouse_name:text;
         unit: Unit;
         created_date:text;
@@ -360,8 +368,11 @@ service : {
 
 
         //RAW MATERIAL AGREEMENTS
-        "add_raw_material_agreement": (AddRawMaterialAgreementRequest) -> (opt bool);
+        "add_raw_material_agreement": (AddRawMaterialAgreementRequest) -> ( bool);
         "get_all_raw_material_agreements": () -> (vec RawMaterialAgreement) query;
+        "get_raw_material_agreement_by_id" : (nat32) -> (RawMaterialAgreement) query;
+        "delete_raw_material_agreement_by_id" :(nat32) -> (bool);
+        "update_raw_material_agreement": (UpdateRawMaterialAgreementRequest) -> (bool);
 
     //END --- SOURCING AND PROCUREMENT
 

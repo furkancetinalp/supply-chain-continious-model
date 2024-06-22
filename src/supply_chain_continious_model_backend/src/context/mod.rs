@@ -8,7 +8,7 @@ use crate::entities::orders::order::Order;
 use crate::entities::orders::order_detail::OrderDetail;
 use crate::entities::procurement_warehouse::raw_material_warehouse::RawMaterialWarehouse;
 use crate::entities::raw_material_planning::RawMaterial;
-use crate::entities::sourcing_and_procurement::raw_material_agreements::RawMaterialAggreement;
+use crate::entities::sourcing_and_procurement::raw_material_agreements::RawMaterialAgreement;
 use crate::entities::sourcing_and_procurement::raw_material_offers::RawMaterialOffer;
 thread_local! {
     //PLANNING
@@ -18,7 +18,7 @@ thread_local! {
 
     //SOURCING AND PROCUREMENT 
     pub static RAW_MATERIAL_OFFERS: RefCell<HashMap<u32, RawMaterialOffer>> = RefCell::default();
-    pub static RAW_MATERIAL_AGREEMENTS: RefCell<HashMap<u32, RawMaterialAggreement>> = RefCell::default();
+    pub static RAW_MATERIAL_AGREEMENTS: RefCell<HashMap<u32, RawMaterialAgreement>> = RefCell::default();
     
     //PROCUREMENT WAREHOUSE
     pub static RAW_MATERIAL_WAREHOUSES: RefCell<HashMap<u32, RawMaterialWarehouse>> = RefCell::default();

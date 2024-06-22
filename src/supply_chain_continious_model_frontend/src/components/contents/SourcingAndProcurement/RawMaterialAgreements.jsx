@@ -15,15 +15,17 @@ import {
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 
-export default function RawMaterialOffers() {
+export default function RawMaterialAgreements() {
   const [data, setData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
   const [deletedData, setDeletedData] = useState(null);
   const [addedData, setAddedData] = useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
-  const [showAddRawMaterialOfferModal, setShowAddRawMaterialOfferModal] =
-    React.useState(false);
+  const [
+    showAddRawMaterialAgreementModal,
+    setShowAddRawMaterialAgreementModal,
+  ] = React.useState(false);
 
   // useEffect(() => {
   //   supply_chain_continious_model_backend
@@ -46,29 +48,29 @@ export default function RawMaterialOffers() {
 
   useEffect(
     function () {
-      async function get_all_raw_material_offers() {
+      async function get_all_raw_material_agreements() {
         const data =
-          await supply_chain_continious_model_backend.get_all_raw_material_offers();
+          await supply_chain_continious_model_backend.get_all_raw_material_agreements();
         setData(data);
         console.log(data);
       }
-      get_all_raw_material_offers();
+      get_all_raw_material_agreements();
     },
     [updatedData, deletedData, addedData],
   );
 
   // console.log(data);
 
-  function updateRawMaterialOffer(itemId) {
+  function updateRawMaterialAgreement(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
   }
 
-  function DeleteRawMaterialOffer(itemId) {
-    async function delete_raw_material_offer() {
+  function DeleteRawMaterialAgreement(itemId) {
+    async function delete_raw_material_agreement_by_id() {
       const data =
-        await supply_chain_continious_model_backend.delete_raw_material_offer_by_id(
+        await supply_chain_continious_model_backend.delete_raw_material_agreement_by_id(
           itemId,
         );
       if (data == true) {
@@ -80,11 +82,11 @@ export default function RawMaterialOffers() {
         addToast('error', 'An error during delete!');
       }
     }
-    delete_raw_material_offer();
+    delete_raw_material_agreement_by_id();
   }
 
-  function AddRawMaterialOffer() {
-    setShowAddRawMaterialOfferModal(!showAddRawMaterialOfferModal);
+  function AddRawMaterialAgreement() {
+    setShowAddRawMaterialAgreementModal(!showAddRawMaterialAgreementModal);
     setAddedData(null);
   }
 
@@ -93,15 +95,15 @@ export default function RawMaterialOffers() {
       <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
           <h5 className="mr-3 font-semibold dark:text-white">
-            Raw Material Offers
+            Raw Material Agreements
           </h5>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage all your existing raw material offers
+            Manage all your existing raw material agreements
           </p>
         </div>
         <button
           type="button"
-          onClick={() => AddRawMaterialOffer()}
+          onClick={() => AddRawMaterialAgreement()}
           className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#86efac] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           <svg
@@ -113,7 +115,7 @@ export default function RawMaterialOffers() {
           >
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
-          New Raw Material Offer
+          New Raw Material Agreement
         </button>
       </div>
 
@@ -121,10 +123,10 @@ export default function RawMaterialOffers() {
         <thead>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Request Date
+              Agreement Date
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Name
+              Product Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Delivery Date
@@ -150,9 +152,11 @@ export default function RawMaterialOffers() {
           {data?.map((item) => (
             <tr key={item.id}>
               <td className="whitespace-nowrap px-6 py-4">
-                {item?.requested_date}
+                {item?.agreement_date}
               </td>
-              <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
+              <td className="whitespace-nowrap px-6 py-4">
+                {item.product_name}
+              </td>
               <td className="whitespace-nowrap px-6 py-4">
                 {item.delivery_date}
               </td>
@@ -171,13 +175,13 @@ export default function RawMaterialOffers() {
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 <button
-                  onClick={() => updateRawMaterialOffer(item.id)}
+                  onClick={() => updateRawMaterialAgreement(item.id)}
                   className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => DeleteRawMaterialOffer(item.id)}
+                  onClick={() => DeleteRawMaterialAgreement(item.id)}
                   className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
                 >
                   Delete
@@ -188,7 +192,7 @@ export default function RawMaterialOffers() {
         </tbody>
       </table>
       {showModal && (
-        <UpdateRawMaterialOfferModal
+        <UpdateRawMaterialAgreementModal
           showModal={showModal}
           setShowModal={setShowModal}
           itemId={itemId}
@@ -196,10 +200,12 @@ export default function RawMaterialOffers() {
           setUpdatedData={setUpdatedData}
         />
       )}
-      {showAddRawMaterialOfferModal && (
-        <AddRawMaterialOfferModal
+      {showAddRawMaterialAgreementModal && (
+        <AddRawMaterialAgreementModal
           setShowModal={setShowModal}
-          setShowAddRawMaterialOfferModal={setShowAddRawMaterialOfferModal}
+          setShowAddRawMaterialAgreementModal={
+            setShowAddRawMaterialAgreementModal
+          }
           setAddedData={setAddedData}
         />
       )}
@@ -207,7 +213,7 @@ export default function RawMaterialOffers() {
   );
 }
 
-function UpdateRawMaterialOfferModal({
+function UpdateRawMaterialAgreementModal({
   showModal,
   setShowModal,
   itemId,
@@ -228,30 +234,30 @@ function UpdateRawMaterialOfferModal({
 
   const formik = useFormik({
     initialValues: {
-      name: item.name,
+      name: item.product_name,
       amount: item.amount,
       unit_price: item.unit_price,
       company_name: item.company_name,
+      agreement_date: item.agreement_date,
       warehouse_name: item.warehouse_name,
-      requested_date: item.requested_date,
       delivery_date: item.delivery_date,
     },
     onSubmit: (values, bag) => {
       let model = {
         id: parseInt(item.id),
-        name: values.name,
+        product_name: values.name,
         amount: Number(values.amount),
         unit_price: Number(values.unit_price),
         company_name: values.company_name,
-        warehouse_name: values.warehouse_name,
-        requested_date: values.requested_date,
+        agreement_date: values.agreement_date,
         delivery_date: values.delivery_date,
+        warehouse_name: values.warehouse_name,
       };
 
       try {
-        async function update_raw_material_offer() {
+        async function update_raw_material_agreement() {
           const data =
-            await supply_chain_continious_model_backend.update_raw_material_offer(
+            await supply_chain_continious_model_backend.update_raw_material_agreement(
               model,
             );
           if (data == true) {
@@ -267,7 +273,7 @@ function UpdateRawMaterialOfferModal({
             addToast('error', 'An error during update!');
           }
         }
-        update_raw_material_offer();
+        update_raw_material_agreement();
       } catch (error) {
         setTimeout(() => {
           setShowModal(false);
@@ -301,15 +307,15 @@ function UpdateRawMaterialOfferModal({
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl>
-                    <FormLabel>Requested Date</FormLabel>
+                    <FormLabel>Agreement Date</FormLabel>
                     <Input
-                      name="requested_date"
+                      name="agreement_date"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.requested_date}
+                      value={formik.values.agreement_date}
                       isInvalid={
-                        formik.touched.requested_date &&
-                        formik.errors.requested_date
+                        formik.touched.agreement_date &&
+                        formik.errors.agreement_date
                       }
                     ></Input>
                   </FormControl>
@@ -422,9 +428,9 @@ function UpdateRawMaterialOfferModal({
   );
 }
 
-function AddRawMaterialOfferModal({
+function AddRawMaterialAgreementModal({
   setShowModal,
-  setShowAddRawMaterialOfferModal,
+  setShowAddRawMaterialAgreementModal,
   setAddedData,
 }) {
   const toast = useToast();
@@ -440,49 +446,48 @@ function AddRawMaterialOfferModal({
 
   const formik = useFormik({
     initialValues: {
-      date: new Date().toJSON().slice(0, 10),
       name: '',
       amount: 0,
       unit_price: 0,
       company_name: '',
+      agreement_date: new Date().toJSON().slice(0, 10),
       warehouse_name: '',
-      requested_date: new Date().toJSON().slice(0, 10),
-      delivery_date: '',
+      delivery_date: new Date().toJSON().slice(0, 10),
     },
     onSubmit: (values, bag) => {
       let model = {
-        name: values.name,
+        product_name: values.name,
         amount: Number(values.amount),
         unit_price: Number(values.unit_price),
         company_name: values.company_name,
-        warehouse_name: values.warehouse_name,
-        requested_date: values.requested_date,
+        agreement_date: values.agreement_date,
         delivery_date: values.delivery_date,
+        warehouse_name: values.warehouse_name,
       };
 
       try {
-        async function add_raw_material_offer() {
+        async function add_raw_material_agreement() {
           const data =
-            await supply_chain_continious_model_backend.add_raw_material_offer(
+            await supply_chain_continious_model_backend.add_raw_material_agreement(
               model,
             );
           if (data == true) {
             setTimeout(() => {
-              setShowAddRawMaterialOfferModal(false);
+              setShowAddRawMaterialAgreementModal(false);
             }, '1000');
             addToast('success', 'Item is added');
             setAddedData(data);
           } else {
             setTimeout(() => {
-              setShowAddRawMaterialOfferModal(false);
+              setShowAddRawMaterialAgreementModal(false);
             }, '3000');
             addToast('error', 'An error during add!');
           }
         }
-        add_raw_material_offer();
+        add_raw_material_agreement();
       } catch (error) {
         setTimeout(() => {
-          setShowAddRawMaterialOfferModal(false);
+          setShowAddRawMaterialAgreementModal(false);
         }, '3000');
         addToast('error', 'Error!');
       }
@@ -612,17 +617,10 @@ function AddRawMaterialOfferModal({
               <button
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
-                onClick={() => setShowAddRawMaterialOfferModal(false)}
+                onClick={() => setShowAddRawMaterialAgreementModal(false)}
               >
                 Close
               </button>
-              {/* <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Save Changes
-              </button> */}
             </div>
           </div>
         </div>

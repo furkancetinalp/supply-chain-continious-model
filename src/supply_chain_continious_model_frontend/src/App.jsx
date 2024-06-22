@@ -16,6 +16,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import RawMaterialOffers from './components/contents/SourcingAndProcurement/RawMaterialOffers';
+import RawMaterialAgreements from './components/contents/SourcingAndProcurement/RawMaterialAgreements';
 const App = () => {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -33,6 +34,11 @@ const App = () => {
       title: 'Raw Material Offers ',
       src: 'Calendar',
       item: <RawMaterialOffers />,
+    },
+    {
+      title: 'Raw Material Agreement ',
+      src: 'Calendar',
+      item: <RawMaterialAgreements />,
     },
     { title: 'Search', src: 'Search' },
     // { title: "Search", src: "Search" },
