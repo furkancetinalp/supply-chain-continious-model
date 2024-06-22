@@ -245,7 +245,15 @@ type CreateMainProductRequest =
         category:text;
         brand:text;
         image_list:vec text;
+        // image_list:vec ImageList;
     };
+
+
+type ImageList = 
+    record {
+        url:vec nat8;
+    };
+
 
 type MainProduct = 
     record {

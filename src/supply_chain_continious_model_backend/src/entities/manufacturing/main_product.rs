@@ -17,7 +17,14 @@ pub(crate) struct MainProduct{
     pub brand:String,
     pub created_date:String,
     pub image_list:Vec<String>,
+    // pub image_list:Vec<ImageList>,
 }
 
 
+
+
+#[derive(CandidType, Deserialize, Clone)]
+pub struct ImageList{
+    pub url : Vec<u8>
+}
 

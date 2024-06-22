@@ -114,7 +114,10 @@ export default function MainProducts() {
         <thead>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Product
+              Image
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Barcode
@@ -144,21 +147,25 @@ export default function MainProducts() {
                   scope="row"
                   className="flex items-center whitespace-nowrap font-medium text-gray-900 dark:text-white"
                 >
-                  {item.image_list.map((url) => (
-                    <img
-                      src={'data:image/jpeg;base64,' + url}
-                      alt="iMac Front Image"
-                      className="mr-2 h-[120px] w-[120px] rounded-full"
-                    />
-                  ))}
-                  {item.name}
+                  <div className="group flex w-[320px] justify-center gap-2 max-md:flex-col">
+                    {item.image_list.map((url) => (
+                      <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
+                        <img
+                          src={'data:image/jpeg;base64,' + url}
+                          alt={`${item.id}_image`}
+                          className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-auto"
+                        />
+                      </article>
+                    ))}
+                  </div>
                 </th>
               </td>
-              <td className="whitespace-nowrap px-6 py-4">{item.barcode}</td>
-              <td className="whitespace-nowrap px-6 py-4">{item.category}</td>
-              <td className="whitespace-nowrap px-6 py-4">{item.brand}</td>
+              <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
+              <td className="px-6 py-4">{item.barcode}</td>
+              <td className="px-6 py-4">{item.category}</td>
+              <td className="px-6 py-4">{item.brand}</td>
 
-              <td className="whitespace-nowrap px-6 py-4">{item.price}</td>
+              <td className="px-6 py-4">{item.price}</td>
               <td className="whitespace-nowrap px-6 py-4">
                 {item.total_amount}
               </td>
@@ -390,6 +397,8 @@ function AddMainProductModal({
   setAddedData,
 }) {
   const wrapperRef = useRef(null);
+  const [images, setImages] = useState([]);
+
   const [fileList, setFileList] = useState([]);
   const onDragEnter = () => wrapperRef.current.classList.add('dragover');
 
@@ -409,7 +418,8 @@ function AddMainProductModal({
   const onFileDrop = async (e) => {
     const newFile = e.target.files[0];
     if (newFile) {
-      // let result = await convertFileToBase64(newFile);
+      let newImageBase64 = await convertFileToBase64(newFile);
+      setImages([...images, newImageBase64]);
       const updatedList = [...fileList, newFile];
       setFileList(updatedList);
       props.onFileChange(updatedList);
@@ -450,7 +460,7 @@ function AddMainProductModal({
         price: Number(values.price),
         category: values.category,
         brand: values.brand,
-        image_list: [values.url.replace(' ', '')],
+        image_list: images,
       };
 
       try {
@@ -501,46 +511,6 @@ function AddMainProductModal({
               </button>
             </div>
             {/*body*/}
-            <div
-              ref={wrapperRef}
-              className="drop-file-input"
-              onDragEnter={onDragEnter}
-              onDragLeave={onDragLeave}
-              onDrop={onDrop}
-            >
-              <div className="drop-file-input__label">
-                <img src={uploadImg} alt="" />
-                <p>Drag & Drop your files here</p>
-              </div>
-              <input type="file" value="" onChange={onFileDrop} />
-            </div>
-            {fileList.length > 0 ? (
-              <div className="drop-file-preview">
-                <p className="drop-file-preview__title">Ready to upload</p>
-                {fileList.map((item, index) => (
-                  <div key={index} className="drop-file-preview__item">
-                    <img
-                      src={
-                        ImageConfig[item.type.split('/')[1]] ||
-                        ImageConfig['default']
-                      }
-                      alt=""
-                    />
-                    <div className="drop-file-preview__item__info">
-                      <p>{item.name}</p>
-                      <p>{item.size}B</p>
-                    </div>
-                    <span
-                      className="drop-file-preview__item__del"
-                      onClick={() => fileRemove(item)}
-                    >
-                      x
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-
             <div className="relative flex-auto p-6">
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
@@ -613,12 +583,55 @@ function AddMainProductModal({
                       isInvalid={formik.touched.url && formik.errors.url}
                     ></Input>
                   </FormControl>
+                  <div
+                    ref={wrapperRef}
+                    className="drop-file-input"
+                    onDragEnter={onDragEnter}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
+                  >
+                    <div className="drop-file-input__label">
+                      <img src={uploadImg} alt="" />
+                      <p>Drag & Drop your files here</p>
+                    </div>
+                    <input type="file" value="" onChange={onFileDrop} />
+                  </div>
+                  {fileList.length > 0 ? (
+                    <div className="drop-file-preview">
+                      <p className="drop-file-preview__title">
+                        Ready to upload
+                      </p>
+                      {fileList.map((item, index) => (
+                        <div key={index} className="drop-file-preview__item">
+                          <img
+                            src={
+                              ImageConfig[item.type.split('/')[1]] ||
+                              ImageConfig['default']
+                            }
+                            alt=""
+                          />
+                          <div className="drop-file-preview__item__info">
+                            <p>{item.name}</p>
+                            <p>{item.size}B</p>
+                          </div>
+                          <span
+                            className="drop-file-preview__item__del"
+                            onClick={() => fileRemove(item)}
+                          >
+                            x
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+
                   <Button type="submit" mt="4" width="full" colorScheme="green">
                     Add
                   </Button>
                 </form>
               </Box>
             </div>
+
             {/*footer*/}
             <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-6">
               <button
