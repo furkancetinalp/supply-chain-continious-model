@@ -58,7 +58,7 @@ use crate::{context::ORDERS, entities::orders::order::Order,entities::orders::or
 }
 
 
-pub async fn create_order_detail(order_id:u32,product:Product,price:u64){
+pub async fn create_order_detail(order_id:u32,product:Product,price:f64){
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
     let user_id = ic_cdk::caller();

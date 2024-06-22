@@ -241,7 +241,7 @@ type CreateMainProductRequest =
         name: text;
         barcode:text;
         // unit: Unit;
-        price: nat64;
+        price: float64;
         category:text;
         brand:text;
     };
@@ -252,9 +252,9 @@ type MainProduct =
         id: nat32;
         name: text;
         barcode:text;
-        total_amount: nat64;
+        total_amount: nat32;
         unit: Unit;
-        price: nat64;
+        price: float64;
         category:text;
         brand:text;
         created_date:text;

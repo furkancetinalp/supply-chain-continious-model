@@ -162,7 +162,7 @@ async fn update_product_stock(barcode:&str,quantity:i64) {
         let  item = products.iter_mut()
             .find(|x| x.1.barcode==barcode && x.1.identity == ic_cdk::caller().to_string())
                 .unwrap().1;
-        item.total_amount =item.total_amount + quantity  as u64;
+        item.total_amount =item.total_amount + quantity  as u32;
     });
 }
 

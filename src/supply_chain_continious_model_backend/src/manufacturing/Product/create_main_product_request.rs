@@ -7,7 +7,7 @@ pub struct CreateMainProductRequest{
     pub name:String, //product name
     pub barcode :String,
     // pub unit: Unit,
-    pub price : u64,
+    pub price : f64,
     pub category:String,
     pub brand:String,
         

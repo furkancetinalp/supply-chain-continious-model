@@ -18,6 +18,7 @@ import {
 import RawMaterialOffers from './components/contents/SourcingAndProcurement/RawMaterialOffers';
 import RawMaterialAgreements from './components/contents/SourcingAndProcurement/RawMaterialAgreements';
 import RawMaterialWarehouse from './components/contents/ProcurementWarehouse/RawMaterialWarehouse';
+import MainProducts from './components/contents/Manufacturing/MainProducts';
 const App = () => {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -46,7 +47,7 @@ const App = () => {
       src: 'Calendar',
       item: <RawMaterialWarehouse />,
     },
-    { title: 'Search', src: 'Search' },
+    { title: 'Main Products', src: 'Search', item: <MainProducts /> },
     // { title: "Search", src: "Search" },
     // { title: "Search", src: "Search" },
     // { title: "Search", src: "Search" },
