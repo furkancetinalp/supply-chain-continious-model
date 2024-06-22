@@ -10,6 +10,7 @@ pub struct CreateMainProductRequest{
     pub price : f64,
     pub category:String,
     pub brand:String,
+    pub image_list :Vec<String>,
         
     
 }

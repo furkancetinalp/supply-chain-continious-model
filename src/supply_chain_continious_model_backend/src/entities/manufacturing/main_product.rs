@@ -16,6 +16,7 @@ pub(crate) struct MainProduct{
     pub category:String,
     pub brand:String,
     pub created_date:String,
+    pub image_list:Vec<String>,
 }
 
 

@@ -244,6 +244,7 @@ type CreateMainProductRequest =
         price: float64;
         category:text;
         brand:text;
+        image_list:vec text;
     };
 
 type MainProduct = 
@@ -258,6 +259,8 @@ type MainProduct =
         category:text;
         brand:text;
         created_date:text;
+        image_list:vec text;
+
     };
 //END --- MANUFACTURING
 
@@ -400,7 +403,7 @@ service : {
     //END --- PROCUREMENT WAREHOUSE
 
     //START -- MANUFACTURING
-        "create_main_product": (CreateMainProductRequest) -> (opt bool);
+        "create_main_product": (CreateMainProductRequest) -> ( bool);
         "get_all_main_products": () -> (vec MainProduct) query;
         "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
 

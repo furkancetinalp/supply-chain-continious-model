@@ -14,6 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
+import { Int } from '@dfinity/candid/lib/cjs/idl';
 
 export default function MainProducts() {
   const [data, setData] = useState(null);
@@ -22,10 +23,8 @@ export default function MainProducts() {
   const [addedData, setAddedData] = useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
-  const [
-    showAddRawMaterialWarehouseModal,
-    setShowAddRawMaterialWarehouseModal,
-  ] = React.useState(false);
+  const [showAddMainProductModal, setShowAddMainProductModal] =
+    React.useState(false);
 
   const toast = useToast();
   const toastIdRef = React.useRef();
@@ -40,31 +39,29 @@ export default function MainProducts() {
 
   useEffect(
     function () {
-      async function get_all_raw_material_warehouses() {
+      async function get_all_main_products() {
         const data =
           await supply_chain_continious_model_backend.get_all_main_products();
         setData(data);
         console.log(data);
       }
-      get_all_raw_material_warehouses();
+      get_all_main_products();
     },
     [updatedData, deletedData, addedData],
   );
 
   // console.log(data);
 
-  function updateRawMaterialWarehouse(itemId) {
+  function updateMainProduct(itemId) {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
   }
 
-  function DeleteRawMaterialWarehouse(itemId) {
-    async function delete_raw_material_warehouse() {
+  function DeleteMainProduct(itemId) {
+    async function delete_main_product() {
       const data =
-        await supply_chain_continious_model_backend.delete_raw_material_warehouse_by_id(
-          itemId,
-        );
+        await supply_chain_continious_model_backend.delete_main_product(itemId);
       if (data == true) {
         setTimeout(() => {}, '1000');
         addToast('success', 'Item is deleted!');
@@ -74,11 +71,11 @@ export default function MainProducts() {
         addToast('error', 'An error during delete!');
       }
     }
-    delete_raw_material_warehouse();
+    delete_main_product();
   }
 
   function AddMainProduct() {
-    setShowAddRawMaterialWarehouseModal(!showAddRawMaterialWarehouseModal);
+    setShowAddMainProductModal(!showAddMainProductModal);
     setAddedData(null);
   }
 
@@ -93,19 +90,19 @@ export default function MainProducts() {
         </div>
         <button
           type="button"
-          onClick={() => AddRawMaterialWarehouse()}
+          onClick={() => AddMainProduct()}
           className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#86efac] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="-ml-1 mr-2 h-3.5 w-3.5"
-            viewBox="0 0 20 20"
+            viewBox="0 0 60 20"
             fill="currentColor"
             aria-hidden="true"
           >
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
-          New Raw Material Warehouse
+          New Main Product
         </button>
       </div>
 
@@ -143,11 +140,13 @@ export default function MainProducts() {
                   scope="row"
                   className="flex items-center whitespace-nowrap font-medium text-gray-900 dark:text-white"
                 >
-                  <img
-                    src="https://flowbite.s3.amazonaws.com/blocks/application-ui/products/imac-front-image.png"
-                    alt="iMac Front Image"
-                    className="mr-3 h-8 w-auto"
-                  />
+                  {item.image_list.map((url) => (
+                    <img
+                      src={'data:image/jpeg;base64,' + url}
+                      alt="iMac Front Image"
+                      className="mr-2 h-[120px] w-[120px] rounded-full"
+                    />
+                  ))}
                   {item.name}
                 </th>
               </td>
@@ -161,13 +160,13 @@ export default function MainProducts() {
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 <button
-                  onClick={() => updateRawMaterialWarehouse(item.id)}
+                  onClick={() => updateMainProduct(item.id)}
                   className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => DeleteRawMaterialWarehouse(item.id)}
+                  onClick={() => DeleteMainProduct(item.id)}
                   className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
                 >
                   Delete
@@ -178,7 +177,7 @@ export default function MainProducts() {
         </tbody>
       </table>
       {showModal && (
-        <UpdateRawMaterialWarehouseModal
+        <UpdateMainProductModal
           showModal={showModal}
           setShowModal={setShowModal}
           itemId={itemId}
@@ -186,12 +185,10 @@ export default function MainProducts() {
           setUpdatedData={setUpdatedData}
         />
       )}
-      {showAddRawMaterialWarehouseModal && (
-        <AddRawMaterialWarehouseModal
+      {showAddMainProductModal && (
+        <AddMainProductModal
           setShowModal={setShowModal}
-          setShowAddRawMaterialWarehouseModal={
-            setShowAddRawMaterialWarehouseModal
-          }
+          setShowAddMainProductModal={setShowAddMainProductModal}
           setAddedData={setAddedData}
         />
       )}
@@ -199,7 +196,7 @@ export default function MainProducts() {
   );
 }
 
-function UpdateRawMaterialWarehouseModal({
+function UpdateMainProductModal({
   showModal,
   setShowModal,
   itemId,
@@ -383,9 +380,9 @@ function UpdateRawMaterialWarehouseModal({
   );
 }
 
-function AddRawMaterialWarehouseModal({
+function AddMainProductModal({
   setShowModal,
-  setShowAddRawMaterialWarehouseModal,
+  setShowAddMainProductModal,
   setAddedData,
 }) {
   const toast = useToast();
@@ -402,43 +399,46 @@ function AddRawMaterialWarehouseModal({
   const formik = useFormik({
     initialValues: {
       name: '',
-      district: '',
-      province: '',
-      country: '',
-      location_detail: '',
+      barcode: '',
+      price: 0,
+      category: '',
+      brand: '',
+      url: '',
     },
     onSubmit: (values, bag) => {
       let model = {
         name: values.name,
-        district: values.district,
-        province: values.province,
-        country: values.country,
-        location_detail: values.location_detail,
+        barcode: values.barcode,
+        price: Number(values.price),
+        category: values.category,
+        brand: values.brand,
+        image_list: [values.url.replace(' ', '')],
       };
 
       try {
-        async function add_raw_material_warehouse() {
+        async function create_main_product() {
           const data =
-            await supply_chain_continious_model_backend.add_raw_material_warehouse(
+            await supply_chain_continious_model_backend.create_main_product(
               model,
             );
           if (data == true) {
             setTimeout(() => {
-              setShowAddRawMaterialWarehouseModal(false);
+              setShowAddMainProductModal(false);
             }, '1000');
             addToast('success', 'Item is added');
             setAddedData(data);
           } else {
             setTimeout(() => {
-              setShowAddRawMaterialWarehouseModal(false);
+              setShowAddMainProductModal(false);
             }, '3000');
             addToast('error', 'An error during add!');
           }
         }
-        add_raw_material_warehouse();
+        create_main_product();
       } catch (error) {
+        console.log(error);
         setTimeout(() => {
-          setShowAddRawMaterialWarehouseModal(false);
+          setShowAddMainProductModal(false);
         }, '3000');
         addToast('error', 'Error!');
       }
@@ -452,12 +452,10 @@ function AddRawMaterialWarehouseModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">
-                Add Raw Material Warehouse
-              </h2>
+              <h2 className="text-3xl font-semibold">Add Main Product</h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowAddMainProductModal(false)}
               >
                 <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
                   ×
@@ -480,58 +478,63 @@ function AddRawMaterialWarehouseModal({
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Barcode</FormLabel>
                     <Input
-                      name="district"
+                      name="barcode"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.district}
+                      value={formik.values.barcode}
                       isInvalid={
-                        formik.touched.district && formik.errors.district
+                        formik.touched.barcode && formik.errors.barcode
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Province</FormLabel>
+                    <FormLabel>Price</FormLabel>
                     <Input
-                      name="province"
+                      name="price"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.province}
+                      value={formik.values.price}
+                      isInvalid={formik.touched.price && formik.errors.price}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Category</FormLabel>
+                    <Input
+                      name="category"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.category}
                       isInvalid={
-                        formik.touched.province && formik.errors.province
+                        formik.touched.category && formik.errors.category
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Country</FormLabel>
+                    <FormLabel>Brand</FormLabel>
                     <Input
-                      name="country"
+                      name="brand"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.country}
-                      isInvalid={
-                        formik.touched.country && formik.errors.country
-                      }
+                      value={formik.values.brand}
+                      isInvalid={formik.touched.brand && formik.errors.brand}
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Detail</FormLabel>
+                    <FormLabel>Url</FormLabel>
                     <Input
-                      name="location_detail"
+                      name="url"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.location_detail}
-                      isInvalid={
-                        formik.touched.location_detail &&
-                        formik.errors.location_detail
-                      }
+                      value={formik.values.url}
+                      isInvalid={formik.touched.url && formik.errors.url}
                     ></Input>
                   </FormControl>
-
                   <Button type="submit" mt="4" width="full" colorScheme="green">
                     Add
                   </Button>
@@ -543,7 +546,7 @@ function AddRawMaterialWarehouseModal({
               <button
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
-                onClick={() => setShowAddRawMaterialWarehouseModal(false)}
+                onClick={() => setShowAddMainProductModal(false)}
               >
                 Close
               </button>

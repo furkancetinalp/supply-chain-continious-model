@@ -8,7 +8,7 @@ use crate::idgenerator;
 
 
 #[ic_cdk::update]
- pub async fn create_main_product(request: CreateMainProductRequest) -> Option<bool> {
+ pub async fn create_main_product(request: CreateMainProductRequest) -> bool {
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
     let user_id = ic_cdk::caller();
@@ -24,10 +24,11 @@ use crate::idgenerator;
         category:request.category,
         brand:request.brand,
         unit:Unit::Piece,
+        image_list:request.image_list,
   
     };
     MAIN_PRODUCTS.with(|p| p.borrow_mut().insert(unique_id, data));
-    return Some(true);
+    return check_if_data_exists(unique_id).await;
 }
 
 #[ic_cdk::query]
@@ -200,3 +201,18 @@ pub async fn assign_products_for_order(amount:u32,barcode:String) -> Option<Vec<
     });
 }
 
+
+pub async fn check_if_data_exists(id:u32) -> bool {
+    let data = MAIN_PRODUCTS.with(|item|{
+       let  items = item.borrow_mut();
+       let item = items.get(&id);
+       if item.is_none(){
+        return false;
+       }
+       else{
+        return true;
+       }
+   });
+
+   return data;
+}
