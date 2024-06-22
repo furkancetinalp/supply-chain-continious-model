@@ -6,6 +6,7 @@
     "@dfinity/principal": "^0.15.7",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "buffer": "^6.0.3",
     "date-fns": "^3.6.0",
     "formik": "^2.4.6",
     "framer-motion": "^11.2.11",

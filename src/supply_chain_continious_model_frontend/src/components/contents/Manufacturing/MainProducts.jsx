@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Formik, useFormik } from 'formik';
 import {
   Flex,
@@ -13,8 +13,12 @@ import {
   Alert,
   useToast,
 } from '@chakra-ui/react';
+import uploadImg from '../../../../public/cloud-upload-regular-240.png';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 import { Int } from '@dfinity/candid/lib/cjs/idl';
+import './drop-file-input.css';
+import { ImageConfig } from '../../contents/Manufacturing/config/ImageConfig';
+import PropTypes from 'prop-types';
 
 export default function MainProducts() {
   const [data, setData] = useState(null);
@@ -385,6 +389,40 @@ function AddMainProductModal({
   setShowAddMainProductModal,
   setAddedData,
 }) {
+  const wrapperRef = useRef(null);
+  const [fileList, setFileList] = useState([]);
+  const onDragEnter = () => wrapperRef.current.classList.add('dragover');
+
+  const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
+
+  const onDrop = () => wrapperRef.current.classList.remove('dragover');
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onFileDrop = async (e) => {
+    const newFile = e.target.files[0];
+    if (newFile) {
+      // let result = await convertFileToBase64(newFile);
+      const updatedList = [...fileList, newFile];
+      setFileList(updatedList);
+      props.onFileChange(updatedList);
+    }
+  };
+
+  const fileRemove = (file) => {
+    const updatedList = [...fileList];
+    updatedList.splice(fileList.indexOf(file), 1);
+    setFileList(updatedList);
+    props.onFileChange(updatedList);
+  };
+
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -463,6 +501,46 @@ function AddMainProductModal({
               </button>
             </div>
             {/*body*/}
+            <div
+              ref={wrapperRef}
+              className="drop-file-input"
+              onDragEnter={onDragEnter}
+              onDragLeave={onDragLeave}
+              onDrop={onDrop}
+            >
+              <div className="drop-file-input__label">
+                <img src={uploadImg} alt="" />
+                <p>Drag & Drop your files here</p>
+              </div>
+              <input type="file" value="" onChange={onFileDrop} />
+            </div>
+            {fileList.length > 0 ? (
+              <div className="drop-file-preview">
+                <p className="drop-file-preview__title">Ready to upload</p>
+                {fileList.map((item, index) => (
+                  <div key={index} className="drop-file-preview__item">
+                    <img
+                      src={
+                        ImageConfig[item.type.split('/')[1]] ||
+                        ImageConfig['default']
+                      }
+                      alt=""
+                    />
+                    <div className="drop-file-preview__item__info">
+                      <p>{item.name}</p>
+                      <p>{item.size}B</p>
+                    </div>
+                    <span
+                      className="drop-file-preview__item__del"
+                      onClick={() => fileRemove(item)}
+                    >
+                      x
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
             <div className="relative flex-auto p-6">
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
@@ -558,3 +636,7 @@ function AddMainProductModal({
     </>
   );
 }
+
+MainProducts.propTypes = {
+  onFileChange: PropTypes.func,
+};
