@@ -240,10 +240,10 @@ type CreateMainProductRequest =
     record {
         name: text;
         barcode:text;
-        unit: Unit;
+        // unit: Unit;
         price: nat64;
-        quantity_per_product:nat32;
-
+        category:text;
+        brand:text;
     };
 
 type MainProduct = 
@@ -255,7 +255,8 @@ type MainProduct =
         total_amount: nat64;
         unit: Unit;
         price: nat64;
-        quantity_per_product:nat32;
+        category:text;
+        brand:text;
         created_date:text;
     };
 //END --- MANUFACTURING
@@ -397,6 +398,8 @@ service : {
         "update_raw_material_warehouse": (UpdateRawMaterialWarehouseRequest) -> (bool);
         "check_if_warehouse_name_exists": (text) -> (bool);
     //END --- PROCUREMENT WAREHOUSE
+
+    //START -- MANUFACTURING
         "create_main_product": (CreateMainProductRequest) -> (opt bool);
         "get_all_main_products": () -> (vec MainProduct) query;
         "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
@@ -408,6 +411,7 @@ service : {
         "approve_product": (nat32,ProductStatus) -> (opt bool);
 
         "assign_products_for_order":(nat32,text) -> (opt vec Product);
+    //END --- MANUFACTURING
     
     //START --- ORDERS
         "create_order":(CreateOrderRequest) -> (opt bool);

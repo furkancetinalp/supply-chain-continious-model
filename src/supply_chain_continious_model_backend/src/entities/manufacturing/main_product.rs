@@ -13,7 +13,8 @@ pub(crate) struct MainProduct{
     pub total_amount:u64,
     pub unit: Unit,
     pub price : u64,
-    pub quantity_per_product:u32,
+    pub category:String,
+    pub brand:String,
     pub created_date:String,
 }
 

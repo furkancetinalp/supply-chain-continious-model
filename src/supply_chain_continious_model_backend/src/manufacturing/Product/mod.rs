@@ -1,6 +1,6 @@
 pub(crate) mod create_product_request;
 pub(crate) mod create_main_product_request;
-use crate::{context::{MAIN_PRODUCTS, PRODUCTS}, entities::{manufacturing::{main_product::MainProduct, product::Product}, product_status::ProductStatus}};
+use crate::{context::{MAIN_PRODUCTS, PRODUCTS}, entities::{manufacturing::{main_product::MainProduct, product::Product}, product_status::ProductStatus, unit::Unit}};
 use create_product_request::CreateProductRequest;
 use create_main_product_request::CreateMainProductRequest;
 use crate::idgenerator;
@@ -21,8 +21,9 @@ use crate::idgenerator;
         barcode:request.barcode,
         total_amount:0,
         price:request.price,
-        quantity_per_product:request.quantity_per_product,
-        unit:request.unit,
+        category:request.category,
+        brand:request.brand,
+        unit:Unit::Piece,
   
     };
     MAIN_PRODUCTS.with(|p| p.borrow_mut().insert(unique_id, data));
@@ -63,8 +64,8 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
     else{
 
         let barcode = request.barcode.clone();
-        product_create_process(request,&product_control.1.as_ref().unwrap().name,product_control.1.as_ref().unwrap().quantity_per_product).await;
-        update_product_stock(&barcode, product_control.1.unwrap().quantity_per_product.clone() as i64).await;
+        product_create_process(request,&product_control.1.as_ref().unwrap().name,1).await;
+        update_product_stock(&barcode, 1).await;
         return Some(true);
     }
 }
@@ -82,7 +83,7 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
 
         let mut index = 1;
         while index <=quantity {
-            product_create_process(request.clone(),&product_control.1.as_ref().unwrap().name,product_control.1.as_ref().unwrap().quantity_per_product).await;
+            product_create_process(request.clone(),&product_control.1.as_ref().unwrap().name,1).await;
             index +=1;
         };
         update_product_stock(&request.barcode, quantity as i64).await;
