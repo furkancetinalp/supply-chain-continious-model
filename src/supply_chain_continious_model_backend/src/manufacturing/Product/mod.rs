@@ -3,8 +3,9 @@ pub(crate) mod create_main_product_request;
 use crate::{context::{MAIN_PRODUCTS, PRODUCTS}, entities::{manufacturing::{main_product::MainProduct, product::Product}, product_status::ProductStatus, unit::Unit}};
 use create_product_request::CreateProductRequest;
 use create_main_product_request::CreateMainProductRequest;
+use update_main_product_request::UpdateMainProductRequest;
 use crate::idgenerator;
-
+pub(crate) mod update_main_product_request;
 
 
 #[ic_cdk::update]
@@ -215,4 +216,86 @@ pub async fn check_if_data_exists(id:u32) -> bool {
    });
 
    return data;
+}
+
+//
+
+
+
+
+
+#[ic_cdk::query]
+ pub async fn get_main_product_by_id(id:u32) -> MainProduct {
+     let data = MAIN_PRODUCTS.with(|item|{
+        let  items = item.borrow_mut();
+        let item = items.get(&id).unwrap();
+        return item.clone();
+    });
+
+    return data;
+}
+
+
+#[ic_cdk::update]
+ pub async fn delete_main_product_by_id(id:u32) -> bool {
+    let main_product = get_main_product_by_id(id).await;
+    let check = check_single_product_by_barcode(main_product.barcode).await;
+    if(check == false){
+        return false;
+     }
+     else{
+        let data = MAIN_PRODUCTS.with(|item|{
+            let mut items = item.borrow_mut();
+            let item = items.remove(&id);
+            return item;
+        });
+        if( data.is_some()){
+         
+            return true;
+        }
+        else{
+            return false;
+        }
+     }
+   
+
+}
+
+//UPDATE DEMAND YEARLY 
+#[ic_cdk::update]
+ pub async fn update_main_product(request: UpdateMainProductRequest) -> bool {
+    let data = get_main_product_by_id(request.id).await;
+
+    let mut data = MainProduct{
+        id:request.id,
+        identity:data.identity,
+        name:request.name,
+        barcode:request.barcode,
+        total_amount:0,
+        price:request.price,
+        category:request.category,
+        brand:request.brand,
+        unit:Unit::Piece,
+        image_list:request.image_list,
+        created_date:data.created_date,
+    };
+    MAIN_PRODUCTS.with(|p| p.borrow_mut().insert(request.id, data));
+    return true;
+}
+
+
+pub async fn check_single_product_by_barcode(barcode:String) -> bool {
+    let data = PRODUCTS.with(|products| {
+        let binding = products.borrow();
+        let filter = binding.iter()
+        .find(|& x| x.1.identity == ic_cdk::caller().to_string() && x.1.barcode==barcode);
+        if filter.is_some(){
+            return false;
+        }
+        else{
+            return true;
+        }
+    });
+
+    return data;
 }
