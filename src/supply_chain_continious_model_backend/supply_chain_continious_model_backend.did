@@ -373,6 +373,17 @@ type OrderStatus = variant {
     Cancelled;
 };
 
+type ResultLetgo = 
+    variant {
+        Ok: TokenModel;
+        Err: text;
+    };
+
+type TokenModel =
+    record{
+        id:text;
+        token: text;
+    };
 
 service : {
     //START --- PLANNING
@@ -446,6 +457,9 @@ service : {
         "get_order_by_id" :(nat32) -> (Order);
         "get_all_orders" : () -> (vec Order);
         "get_order_details_by_order_id": (nat32) -> (vec OrderDetail);
-        "update_order" : (nat32,OrderStatus) -> (bool)
+        "update_order" : (nat32,OrderStatus) -> (bool);
     //END --- ORDERS
+
+        "login_letgo": (email:text,password:text) -> (ResultLetgo) ;
+
 }

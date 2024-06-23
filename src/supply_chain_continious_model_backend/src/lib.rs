@@ -6,3 +6,4 @@ mod sourcing_and_procurement;
 mod procurement_warehouse;
 mod manufacturing;
 mod orders;
+mod sales;

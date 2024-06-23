@@ -10,3 +10,4 @@ pub mod product_status;
 pub mod manufacturing;
 pub mod orders;
 pub mod order_status;
+pub mod integration;
