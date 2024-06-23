@@ -252,7 +252,7 @@ type UpdateMainProductRequest =
     record {
         id:nat32;
         name: text;
-        barcode:text;
+        // barcode:text;
         // unit: Unit;
         price: float64;
         category:text;

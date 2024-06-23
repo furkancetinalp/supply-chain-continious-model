@@ -270,7 +270,7 @@ pub async fn check_if_data_exists(id:u32) -> bool {
         id:request.id,
         identity:data.identity,
         name:request.name,
-        barcode:request.barcode,
+        barcode:data.barcode,
         total_amount:0,
         price:request.price,
         category:request.category,

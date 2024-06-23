@@ -6,7 +6,7 @@ use crate::entities::{manufacturing::main_product::ImageList, unit::Unit};
 pub struct UpdateMainProductRequest{
     pub id:u32,
     pub name:String, //product name
-    pub barcode :String,
+    // pub barcode :String,
     // pub unit: Unit,
     pub price : f64,
     pub category:String,
