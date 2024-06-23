@@ -27,6 +27,11 @@ const App = () => {
     // { title: 'Inbox', src: 'Chat', item: <Inbox /> },
     // { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
     {
+      title: 'Main Products',
+      src: 'Search',
+      item: <MainProducts />,
+    },
+    {
       title: 'Demand Planning ',
       src: 'Chart',
       item: <DemandPlanning />,
@@ -52,12 +57,6 @@ const App = () => {
       title: 'Raw Material Warehouse ',
       src: 'Setting',
       item: <RawMaterialWarehouse />,
-    },
-    {
-      title: 'Main Products',
-      src: 'Search',
-      item: <MainProducts />,
-      gap: true,
     },
 
     // { title: 'Mass Products ', src: 'Folder', gap: true },
