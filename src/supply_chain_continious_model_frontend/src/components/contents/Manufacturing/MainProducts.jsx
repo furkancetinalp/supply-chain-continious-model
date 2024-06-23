@@ -30,6 +30,11 @@ export default function MainProducts() {
   const [showAddMainProductModal, setShowAddMainProductModal] =
     React.useState(false);
 
+  const [showLetgoLoginModal, setShowLetgoLoginModal] = useState(false);
+  function LoginLetgo() {
+    setShowLetgoLoginModal(!showLetgoLoginModal);
+  }
+
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -97,7 +102,7 @@ export default function MainProducts() {
         <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
           <button
             type="button"
-            onClick={() => AddRawMaterialWarehouse()}
+            onClick={() => LoginLetgo()}
             className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#38d2fc] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-[#55b6d1] focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
           >
             <svg
@@ -222,6 +227,12 @@ export default function MainProducts() {
           setShowModal={setShowModal}
           setShowAddMainProductModal={setShowAddMainProductModal}
           setAddedData={setAddedData}
+        />
+      )}
+      {showLetgoLoginModal && (
+        <LetgoLoginModal
+          showLetgoLoginModal={showLetgoLoginModal}
+          setShowLetgoLoginModal={setShowLetgoLoginModal}
         />
       )}
     </>
@@ -728,3 +739,228 @@ function AddMainProductModal({
 MainProducts.propTypes = {
   onFileChange: PropTypes.func,
 };
+
+function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
+  // const toast = useToast();
+  // const toastIdRef = React.useRef();
+
+  // function addToast() {
+  //   toastIdRef.current = toast({
+  //     description: 'Success',
+  //     colorScheme: 'teal',
+  //     status: 'success',
+  //   });
+  // }
+  // const formik = useFormik({
+  //   initialValues: {
+  //     email: '',
+  //     password: '',
+  //   },
+
+  //   onSubmit: async (values, bag) => {
+  //     try {
+  //       const imp = await ecommerce_backend
+  //         .login_letgo(values.email, values.password)
+  //         .then((data) => {
+  //           const id = data['Ok']['id'];
+  //           const token = data['Ok']['token'];
+
+  //           console.log('id', id);
+  //           if (id != undefined) {
+  //             // localStorage.setItem("token", token);
+  //             // localStorage.setItem("userid", id);
+  //             login(data['Ok']);
+  //             addToast();
+  //             var timer = setTimeout(function () {}, 3000);
+  //             navigate('/');
+
+  //             return (
+  //               <div>
+  //                 <Success200 />
+  //               </div>
+  //             );
+  //           } else {
+  //             localStorage.removeItem('token');
+  //             localStorage.removeItem('userid');
+  //             return <Error401 />;
+  //           }
+  //         });
+  //       return <Success200 />;
+  //     } catch (error) {
+  //       localStorage.removeItem('token');
+  //       localStorage.removeItem('userid');
+  //       bag.setErrors({ general: 'Login Failed!!' });
+
+  //       return <div>error!!!!!!!!!</div>;
+  //     }
+  //   },
+  // });
+  // return (
+  //   <div>
+  //     <Flex align="center" width="full" justifyContent="center">
+  //       <Box pt="10">
+  //         <Box textAlign="center">
+  //           <Heading>Login</Heading>
+  //         </Box>
+  //         <Box my="5">
+  //           {formik.errors.general && (
+  //             <Alert status="error">{formik.errors.general}</Alert>
+  //           )}
+  //         </Box>
+  //         <Box my={5} textAlign="left">
+  //           <form onSubmit={formik.handleSubmit}>
+  //             <FormControl>
+  //               <FormLabel>Email</FormLabel>
+  //               <Input
+  //                 name="email"
+  //                 onChange={formik.handleChange}
+  //                 onBlur={formik.handleBlur}
+  //                 value={formik.values.email}
+  //                 isInvalid={formik.touched.email && formik.errors.email}
+  //               ></Input>
+  //             </FormControl>
+
+  //             <FormControl mt="4">
+  //               <FormLabel>Password</FormLabel>
+  //               <Input
+  //                 name="password"
+  //                 onChange={formik.handleChange}
+  //                 onBlur={formik.handleBlur}
+  //                 value={formik.values.password}
+  //                 type="password"
+  //                 isInvalid={formik.touched.password && formik.errors.password}
+  //               ></Input>
+  //             </FormControl>
+  //             <Button type="submit" mt="4" width="full">
+  //               Login
+  //             </Button>
+  //           </form>
+  //         </Box>
+  //       </Box>
+  //     </Flex>
+  //   </div>
+  // );
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+  function addToast(result, message) {
+    toastIdRef.current = toast({
+      description: result,
+      colorScheme: result == 'success' ? 'green' : 'red',
+      status: result,
+      title: message,
+    });
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+
+    onSubmit: (values, bag) => {
+      let model = {
+        id: parseInt(item.id),
+        name: values.name,
+        district: values.district,
+        province: values.province,
+        country: values.country,
+        location_detail: values.location_detail,
+      };
+
+      try {
+        async function update_raw_material_warehouse() {
+          const data =
+            await supply_chain_continious_model_backend.update_raw_material_warehouse(
+              model,
+            );
+          if (data == true) {
+            setTimeout(() => {
+              setShowModal(false);
+            }, '1000');
+            addToast('success', 'Item is updated');
+            setUpdatedData(data);
+          } else {
+            setTimeout(() => {
+              setShowModal(false);
+            }, '3000');
+            addToast('error', 'An error during update!');
+          }
+        }
+        update_raw_material_warehouse();
+      } catch (error) {
+        setTimeout(() => {
+          setShowModal(false);
+        }, '3000');
+        addToast('error', 'Error!');
+      }
+    },
+  });
+  return (
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+        <div className="relative mx-auto my-6 w-auto max-w-3xl">
+          {/*content*/}
+          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+            {/*header*/}
+            <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
+              <h2 className="text-3xl font-semibold">Login to Letgo</h2>
+              <button
+                className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
+                onClick={() => setShowModal(false)}
+              >
+                <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
+                  ×
+                </span>
+              </button>
+            </div>
+            {/*body*/}
+            <div className="relative flex-auto p-6">
+              <Box my={5} textAlign="left">
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl mt="2">
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      name="email"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.email}
+                      isInvalid={formik.touched.email && formik.errors.email}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl>
+                    <FormLabel>Password</FormLabel>
+                    <Input
+                      name="password"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.password}
+                      isInvalid={
+                        formik.touched.password && formik.errors.password
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <Button type="submit" mt="4" width="full" colorScheme="cyan">
+                    Login
+                  </Button>
+                </form>
+              </Box>
+            </div>
+            {/*footer*/}
+            <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-6">
+              <button
+                className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+                type="button"
+                onClick={() => setShowLetgoLoginModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
+    </>
+  );
+}
