@@ -3,11 +3,11 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 const data = [
-  { name: 'Male', value: 540 },
-  { name: 'Female', value: 620 },
-  { name: 'Other', value: 210 },
+  { name: 'Corporate', value: 240 },
+  { name: 'Foundation', value: 620 },
+  { name: 'Government', value: 210 },
 ];
-
+//corporate,foundation,government,hospitality,education,individual
 const RADIAN = Math.PI / 180;
 const COLORS = ['#00C49F', '#FFBB28', '#FF8042'];
 
@@ -39,7 +39,7 @@ const renderCustomizedLabel = ({
 export default function BuyerProfilePieChart() {
   return (
     <div className="flex h-[22rem] w-[20rem] flex-col rounded-sm border border-gray-200 bg-white p-4">
-      <strong className="font-medium text-gray-700">Buyer Profile</strong>
+      <strong className="font-medium text-gray-700">Customer Profile</strong>
       <div className="mt-3 w-full flex-1 text-xs">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart width={400} height={300}>
