@@ -65,7 +65,9 @@ export default function MainProducts() {
   function DeleteMainProduct(itemId) {
     async function delete_main_product() {
       const data =
-        await supply_chain_continious_model_backend.delete_main_product(itemId);
+        await supply_chain_continious_model_backend.delete_main_product_by_id(
+          itemId,
+        );
       if (data == true) {
         setTimeout(() => {}, '1000');
         addToast('success', 'Item is deleted!');
@@ -153,7 +155,7 @@ export default function MainProducts() {
                         <img
                           src={'data:image/jpeg;base64,' + url}
                           alt={`${item.id}_image`}
-                          className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-auto"
+                          className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-[140px]"
                         />
                       </article>
                     ))}
@@ -214,6 +216,43 @@ function UpdateMainProductModal({
   data,
   setUpdatedData,
 }) {
+  const wrapperRef = useRef(null);
+  const [images, setImages] = useState([]);
+
+  const [fileList, setFileList] = useState([]);
+  const onDragEnter = () => wrapperRef.current.classList.add('dragover');
+
+  const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
+
+  const onDrop = () => wrapperRef.current.classList.remove('dragover');
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onFileDrop = async (e) => {
+    const newFile = e.target.files[0];
+    if (newFile) {
+      let newImageBase64 = await convertFileToBase64(newFile);
+      setImages([...images, newImageBase64]);
+      const updatedList = [...fileList, newFile];
+      setFileList(updatedList);
+      props.onFileChange(updatedList);
+    }
+  };
+
+  const fileRemove = (file) => {
+    const updatedList = [...fileList];
+    updatedList.splice(fileList.indexOf(file), 1);
+    setFileList(updatedList);
+    props.onFileChange(updatedList);
+  };
+
   const item = data.find((x) => x.id == itemId);
   const toast = useToast();
   const toastIdRef = React.useRef();
@@ -225,29 +264,29 @@ function UpdateMainProductModal({
       title: message,
     });
   }
-
   const formik = useFormik({
     initialValues: {
       name: item.name,
-      district: item.district,
-      province: item.province,
-      country: item.country,
-      location_detail: item.location_detail,
+      barcode: item.barcode,
+      price: item.price,
+      category: item.category,
+      brand: item.brand,
     },
     onSubmit: (values, bag) => {
       let model = {
         id: parseInt(item.id),
         name: values.name,
-        district: values.district,
-        province: values.province,
-        country: values.country,
-        location_detail: values.location_detail,
+        barcode: values.barcode,
+        price: Number(values.price),
+        category: values.category,
+        brand: values.brand,
+        image_list: images,
       };
 
       try {
-        async function update_raw_material_warehouse() {
+        async function update_main_product() {
           const data =
-            await supply_chain_continious_model_backend.update_raw_material_warehouse(
+            await supply_chain_continious_model_backend.update_main_product(
               model,
             );
           if (data == true) {
@@ -263,7 +302,7 @@ function UpdateMainProductModal({
             addToast('error', 'An error during update!');
           }
         }
-        update_raw_material_warehouse();
+        update_main_product();
       } catch (error) {
         setTimeout(() => {
           setShowModal(false);
@@ -280,9 +319,7 @@ function UpdateMainProductModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">
-                Update Raw Material Warehouse
-              </h2>
+              <h2 className="text-3xl font-semibold">Update Main Product</h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -308,57 +345,94 @@ function UpdateMainProductModal({
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Barcode</FormLabel>
                     <Input
-                      name="district"
+                      name="barcode"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.district}
+                      value={formik.values.barcode}
                       isInvalid={
-                        formik.touched.district && formik.errors.district
+                        formik.touched.barcode && formik.errors.barcode
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Province</FormLabel>
+                    <FormLabel>Price</FormLabel>
                     <Input
-                      name="province"
+                      name="price"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.province}
+                      value={formik.values.price}
+                      isInvalid={formik.touched.price && formik.errors.price}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Category</FormLabel>
+                    <Input
+                      name="category"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.category}
                       isInvalid={
-                        formik.touched.province && formik.errors.province
+                        formik.touched.category && formik.errors.category
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Country</FormLabel>
+                    <FormLabel>Brand</FormLabel>
                     <Input
-                      name="country"
+                      name="brand"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.country}
-                      isInvalid={
-                        formik.touched.country && formik.errors.country
-                      }
+                      value={formik.values.brand}
+                      isInvalid={formik.touched.brand && formik.errors.brand}
                     ></Input>
                   </FormControl>
 
-                  <FormControl mt="2">
-                    <FormLabel>Detail</FormLabel>
-                    <Input
-                      name="location_detail"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.location_detail}
-                      isInvalid={
-                        formik.touched.location_detail &&
-                        formik.errors.location_detail
-                      }
-                    ></Input>
-                  </FormControl>
+                  <div
+                    ref={wrapperRef}
+                    className="drop-file-input"
+                    onDragEnter={onDragEnter}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
+                  >
+                    <div className="drop-file-input__label">
+                      <img src={uploadImg} alt="" />
+                      <p>Drag & Drop your files here</p>
+                    </div>
+                    <input type="file" value="" onChange={onFileDrop} />
+                  </div>
+                  {fileList.length > 0 ? (
+                    <div className="drop-file-preview">
+                      <p className="drop-file-preview__title">
+                        Ready to upload
+                      </p>
+                      {fileList.map((item, index) => (
+                        <div key={index} className="drop-file-preview__item">
+                          <img
+                            src={
+                              ImageConfig[item.type.split('/')[1]] ||
+                              ImageConfig['default']
+                            }
+                            alt=""
+                          />
+                          <div className="drop-file-preview__item__info">
+                            <p>{item.name}</p>
+                            <p>{item.size}B</p>
+                          </div>
+                          <span
+                            className="drop-file-preview__item__del"
+                            onClick={() => fileRemove(item)}
+                          >
+                            x
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
 
                   <Button type="submit" mt="4" width="full" colorScheme="blue">
                     Update
@@ -375,13 +449,6 @@ function UpdateMainProductModal({
               >
                 Close
               </button>
-              {/* <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Save Changes
-              </button> */}
             </div>
           </div>
         </div>
@@ -451,7 +518,6 @@ function AddMainProductModal({
       price: 0,
       category: '',
       brand: '',
-      url: '',
     },
     onSubmit: (values, bag) => {
       let model = {
@@ -573,16 +639,6 @@ function AddMainProductModal({
                     ></Input>
                   </FormControl>
 
-                  <FormControl mt="2">
-                    <FormLabel>Url</FormLabel>
-                    <Input
-                      name="url"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.url}
-                      isInvalid={formik.touched.url && formik.errors.url}
-                    ></Input>
-                  </FormControl>
                   <div
                     ref={wrapperRef}
                     className="drop-file-input"
