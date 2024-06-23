@@ -24,18 +24,24 @@ const App = () => {
   const [selected, setSelected] = useState(0);
   const Menus = [
     { title: 'Dashboard', src: 'Chart_fill', item: <Dashboard /> },
-    { title: 'Inbox', src: 'Chat', item: <Inbox /> },
-    { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
-    { title: 'Demand Analysis ', src: 'Calendar', item: <DemandPlanning /> },
+    // { title: 'Inbox', src: 'Chat', item: <Inbox /> },
+    // { title: 'Accounts', src: 'User', item: <Accounts />, gap: true },
+    {
+      title: 'Demand Planning ',
+      src: 'Chart',
+      item: <DemandPlanning />,
+      gap: true,
+    },
     {
       title: 'Raw Material Planning ',
-      src: 'Calendar',
+      src: 'Chart',
       item: <RawMaterialPlanning />,
     },
     {
       title: 'Raw Material Offers ',
-      src: 'Calendar',
+      src: 'Folder',
       item: <RawMaterialOffers />,
+      gap: true,
     },
     {
       title: 'Raw Material Agreement ',
@@ -44,21 +50,19 @@ const App = () => {
     },
     {
       title: 'Raw Material Warehouse ',
-      src: 'Calendar',
+      src: 'Setting',
       item: <RawMaterialWarehouse />,
     },
-    { title: 'Main Products', src: 'Search', item: <MainProducts /> },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    // { title: "Search", src: "Search" },
-    { title: 'Analytics', src: 'Chart' },
-    { title: 'Files ', src: 'Folder', gap: true },
-    { title: 'Setting', src: 'Setting' },
+    {
+      title: 'Main Products',
+      src: 'Search',
+      item: <MainProducts />,
+      gap: true,
+    },
+
+    // { title: 'Mass Products ', src: 'Folder', gap: true },
+    // { title: 'Orders', src: 'Chart' },
+    // { title: 'Setting', src: 'Setting' },
   ];
 
   return (
@@ -85,7 +89,7 @@ const App = () => {
               !open && 'scale-0'
             }`}
           >
-            Designer
+            Supply Chain
           </h1>
         </div>
         <ul className="pt-6">
