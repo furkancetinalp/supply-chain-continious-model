@@ -220,7 +220,11 @@ export default function MainProducts() {
               <td className="px-6 py-4">{item.brand}</td>
 
               <td className="px-6 py-4">{item.price}</td>
-              <td className="px-6 py-4">{item.total_amount}</td>
+              <td className="px-6 py-4">
+                <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                  {item.total_amount}
+                </span>
+              </td>
               <td className="px-2 py-4">
                 {/* <button
                   onClick={() => updateMainProduct(item.id)}

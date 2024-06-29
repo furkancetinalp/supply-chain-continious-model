@@ -64,9 +64,9 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
         return Some(false);
     }
     else{
-
+        let main_product_id = product_control.1.as_ref().unwrap().id;
         let barcode = request.barcode.clone();
-        product_create_process(request,&product_control.1.as_ref().unwrap().name,1).await;
+        product_create_process(request,&product_control.1.as_ref().unwrap().name,1,main_product_id).await;
         update_product_stock(&barcode, 1).await;
         return Some(true);
     }
@@ -82,10 +82,11 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
         return false;
     }
     else{
+        let main_product_id = product_control.1.as_ref().unwrap().id;
 
         let mut index = 1;
         while index <=quantity {
-            product_create_process(request.clone(),&product_control.1.as_ref().unwrap().name,1).await;
+            product_create_process(request.clone(),&product_control.1.as_ref().unwrap().name,1,main_product_id).await;
             index +=1;
         };
         update_product_stock(&request.barcode, quantity as i64).await;
@@ -125,7 +126,7 @@ pub async fn get_all_created_products() -> Vec< Product> {
 }
 
 
-async fn product_create_process(request:CreateProductRequest,product_name:&str,quantity_per_product:u32) {
+async fn product_create_process(request:CreateProductRequest,product_name:&str,quantity_per_product:u32,main_product_id:u32) {
     let created_date = ic_cdk::api::time().to_string();
     let unique_id:u32 = idgenerator::create_id().await;
     let user_id = ic_cdk::caller();
@@ -134,6 +135,7 @@ async fn product_create_process(request:CreateProductRequest,product_name:&str,q
         id: unique_id, 
         identity:user_id.to_string(),
         name:product_name.to_string(),
+        main_product_id,
         created_date,
         barcode:request.barcode,
         quantity:quantity_per_product as u64,

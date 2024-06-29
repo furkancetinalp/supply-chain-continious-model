@@ -9,6 +9,7 @@ pub(crate) struct Product{
     pub id:u32,
     pub identity:String,
     pub name:String, //product name
+    pub main_product_id:u32,
     // pub price : u64,
     pub barcode :String,
     pub quantity:u64,

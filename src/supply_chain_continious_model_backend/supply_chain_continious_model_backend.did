@@ -228,6 +228,7 @@ type Product =
         identity:text;
         id: nat32;
         name: text;
+        main_product_id:nat32;
         // price: nat64;
         // unit: Unit;
         status: ProductStatus;
