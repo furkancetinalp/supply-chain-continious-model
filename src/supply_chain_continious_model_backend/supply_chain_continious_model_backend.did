@@ -448,7 +448,8 @@ service : {
         "create_bulk_product": (CreateProductRequest,quantity:nat32) -> (bool);
         "get_all_created_products": () -> (vec Product) query;
 
-        "approve_product": (nat32,ProductStatus) -> (opt bool);
+        "approve_product": (nat32,ProductStatus) -> (bool);
+        "delete_product": (nat32) -> (bool);
 
         "assign_products_for_order":(nat32,text) -> (opt vec Product);
     //END --- MANUFACTURING

@@ -114,17 +114,32 @@ pub async fn get_all_created_products() -> Vec< Product> {
 
 //PRODUCT APPROVING
 #[ic_cdk::update]
- pub async fn approve_product(product_id:u32,status:ProductStatus) -> Option<bool> {
+ pub async fn approve_product(product_id:u32,status:ProductStatus) -> bool {
      PRODUCTS.with(|products|{
         let mut products = products.borrow_mut();
         let  item = products.get_mut(&product_id).unwrap();
         item.status = status;
     });
-    return Some(true);
+    return true;
 
 
 }
 
+#[ic_cdk::update]
+ pub async fn delete_product(id:u32) -> bool {
+     let data = PRODUCTS.with(|item|{
+        let mut items = item.borrow_mut();
+        let item = items.remove(&id);
+        return item;
+    });
+    if( data.is_some()){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
 
 async fn product_create_process(request:CreateProductRequest,product_name:&str,quantity_per_product:u32,main_product_id:u32) {
     let created_date = ic_cdk::api::time().to_string();
