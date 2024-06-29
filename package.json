@@ -14,5 +14,8 @@
   "type": "module",
   "workspaces": [
     "src/supply_chain_continious_model_frontend"
-  ]
+  ],
+  "dependencies": {
+    "popper.js": "^1.16.1-lts"
+  }
 }

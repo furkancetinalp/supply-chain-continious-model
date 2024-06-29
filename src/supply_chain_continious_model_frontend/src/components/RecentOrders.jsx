@@ -9,7 +9,7 @@ export default function RecentOrders() {
   useEffect(function () {
     async function get_all_orders() {
       const data = await supply_chain_continious_model_backend.get_all_orders();
-      setData(data);
+      setOrders(data);
       console.log(data);
     }
     get_all_orders();

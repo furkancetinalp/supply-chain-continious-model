@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createRef } from 'react';
 import { Formik, useFormik } from 'formik';
 import {
   Flex,
@@ -19,6 +19,8 @@ import { Int } from '@dfinity/candid/lib/cjs/idl';
 import './drop-file-input.css';
 import { ImageConfig } from '../../contents/Manufacturing/config/ImageConfig';
 import PropTypes from 'prop-types';
+import Popper from 'popper.js';
+import { ShiftingDropDown } from './ShiftingDropdown';
 
 export default function MainProducts() {
   const [data, setData] = useState(null);
@@ -31,6 +33,22 @@ export default function MainProducts() {
     React.useState(false);
 
   const [showLetgoLoginModal, setShowLetgoLoginModal] = useState(false);
+
+  const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
+  const btnDropdownRef = createRef();
+  const popoverDropdownRef = createRef();
+  const openDropdownPopover = () => {
+    new Popper(btnDropdownRef.current, popoverDropdownRef.current, {
+      placement: 'bottom-start',
+    });
+    setDropdownPopoverShow(true);
+  };
+  const closeDropdownPopover = () => {
+    setDropdownPopoverShow(false);
+  };
+  let bgColor = '';
+  let color = 'bg-gray-800';
+
   function LoginLetgo() {
     setShowLetgoLoginModal(!showLetgoLoginModal);
   }
@@ -65,6 +83,7 @@ export default function MainProducts() {
     setShowModal(!showModal);
     setItemId(itemId);
     setUpdatedData(null);
+    closeDropdownPopover();
   }
 
   function DeleteMainProduct(itemId) {
@@ -74,9 +93,10 @@ export default function MainProducts() {
           itemId,
         );
       if (data == true) {
-        setTimeout(() => {}, '1000');
+        setTimeout(() => {}, '2000');
         addToast('success', 'Item is deleted!');
         setDeletedData(itemId);
+        closeDropdownPopover();
       } else {
         setTimeout(() => {}, '3000');
         addToast('error', 'An error during delete!');
@@ -174,7 +194,7 @@ export default function MainProducts() {
                   className="flex items-center whitespace-nowrap font-medium text-gray-900 dark:text-white"
                 >
                   <div className="group flex w-[320px] justify-center gap-2 max-md:flex-col">
-                    {item.image_list.map((url) => (
+                    {item.image_list.slice(0, 2).map((url) => (
                       <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
                         <img
                           src={'data:image/jpeg;base64,' + url}
@@ -192,11 +212,9 @@ export default function MainProducts() {
               <td className="px-6 py-4">{item.brand}</td>
 
               <td className="px-6 py-4">{item.price}</td>
-              <td className="whitespace-nowrap px-6 py-4">
-                {item.total_amount}
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <button
+              <td className="px-6 py-4">{item.total_amount}</td>
+              <td className="px-2 py-4">
+                {/* <button
                   onClick={() => updateMainProduct(item.id)}
                   className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
                 >
@@ -207,7 +225,76 @@ export default function MainProducts() {
                   className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
                 >
                   Delete
-                </button>
+                </button> */}
+                {/* <ShiftingDropDown
+                  DeleteMainProduct={DeleteMainProduct}
+                  updateMainProduct={updateMainProduct}
+                  itemId={itemId}
+                /> */}
+                {/* <DropdownButton
+                  updateMainProduct={updateMainProduct}
+                  DeleteMainProduct={DeleteMainProduct}
+                  itemId={itemId}
+                /> */}
+                <div className="flex flex-wrap">
+                  <div className="w-full px-4 sm:w-6/12 md:w-4/12">
+                    <div className="relative inline-flex w-full align-middle">
+                      <button
+                        className={
+                          'mb-1 mr-1 rounded px-6 py-3 text-sm font-bold uppercase text-black shadow outline-none hover:shadow-lg focus:outline-none ' +
+                          bgColor
+                        }
+                        style={{ transition: 'all .15s ease' }}
+                        type="button"
+                        ref={btnDropdownRef}
+                        onClick={() => {
+                          dropdownPopoverShow
+                            ? closeDropdownPopover()
+                            : openDropdownPopover();
+                        }}
+                      >
+                        Actions
+                      </button>
+                      <div
+                        ref={popoverDropdownRef}
+                        className={
+                          (dropdownPopoverShow ? 'block ' : 'hidden ') +
+                          (color === 'white' ? 'bg-white' : bgColor + ' ') +
+                          'z-50 float-left mt-1 list-none rounded py-2 text-left text-base shadow-lg'
+                        }
+                        style={{ minWidth: '12rem' }}
+                      >
+                        <button
+                          className={
+                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
+                            (color === 'black')
+                          }
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          Mass Production
+                        </button>
+                        <button
+                          className={
+                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-blue-300 ' +
+                            (color === 'black')
+                          }
+                          onClick={() => updateMainProduct(item.id)}
+                        >
+                          Update
+                        </button>
+                        <button
+                          className={
+                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-red-300 ' +
+                            (color === 'black')
+                          }
+                          onClick={() => DeleteMainProduct(item.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </td>
             </tr>
           ))}
@@ -741,105 +828,6 @@ MainProducts.propTypes = {
 };
 
 function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
-  // const toast = useToast();
-  // const toastIdRef = React.useRef();
-
-  // function addToast() {
-  //   toastIdRef.current = toast({
-  //     description: 'Success',
-  //     colorScheme: 'teal',
-  //     status: 'success',
-  //   });
-  // }
-  // const formik = useFormik({
-  //   initialValues: {
-  //     email: '',
-  //     password: '',
-  //   },
-
-  //   onSubmit: async (values, bag) => {
-  //     try {
-  //       const imp = await ecommerce_backend
-  //         .login_letgo(values.email, values.password)
-  //         .then((data) => {
-  //           const id = data['Ok']['id'];
-  //           const token = data['Ok']['token'];
-
-  //           console.log('id', id);
-  //           if (id != undefined) {
-  //             // localStorage.setItem("token", token);
-  //             // localStorage.setItem("userid", id);
-  //             login(data['Ok']);
-  //             addToast();
-  //             var timer = setTimeout(function () {}, 3000);
-  //             navigate('/');
-
-  //             return (
-  //               <div>
-  //                 <Success200 />
-  //               </div>
-  //             );
-  //           } else {
-  //             localStorage.removeItem('token');
-  //             localStorage.removeItem('userid');
-  //             return <Error401 />;
-  //           }
-  //         });
-  //       return <Success200 />;
-  //     } catch (error) {
-  //       localStorage.removeItem('token');
-  //       localStorage.removeItem('userid');
-  //       bag.setErrors({ general: 'Login Failed!!' });
-
-  //       return <div>error!!!!!!!!!</div>;
-  //     }
-  //   },
-  // });
-  // return (
-  //   <div>
-  //     <Flex align="center" width="full" justifyContent="center">
-  //       <Box pt="10">
-  //         <Box textAlign="center">
-  //           <Heading>Login</Heading>
-  //         </Box>
-  //         <Box my="5">
-  //           {formik.errors.general && (
-  //             <Alert status="error">{formik.errors.general}</Alert>
-  //           )}
-  //         </Box>
-  //         <Box my={5} textAlign="left">
-  //           <form onSubmit={formik.handleSubmit}>
-  //             <FormControl>
-  //               <FormLabel>Email</FormLabel>
-  //               <Input
-  //                 name="email"
-  //                 onChange={formik.handleChange}
-  //                 onBlur={formik.handleBlur}
-  //                 value={formik.values.email}
-  //                 isInvalid={formik.touched.email && formik.errors.email}
-  //               ></Input>
-  //             </FormControl>
-
-  //             <FormControl mt="4">
-  //               <FormLabel>Password</FormLabel>
-  //               <Input
-  //                 name="password"
-  //                 onChange={formik.handleChange}
-  //                 onBlur={formik.handleBlur}
-  //                 value={formik.values.password}
-  //                 type="password"
-  //                 isInvalid={formik.touched.password && formik.errors.password}
-  //               ></Input>
-  //             </FormControl>
-  //             <Button type="submit" mt="4" width="full">
-  //               Login
-  //             </Button>
-  //           </form>
-  //         </Box>
-  //       </Box>
-  //     </Flex>
-  //   </div>
-  // );
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
