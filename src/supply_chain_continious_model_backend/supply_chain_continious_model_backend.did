@@ -444,7 +444,7 @@ service : {
 
 
         "create_product": (CreateProductRequest) -> (opt bool);
-        "create_bulk_product": (CreateProductRequest,quantity:nat32) -> (opt bool);
+        "create_bulk_product": (CreateProductRequest,quantity:nat32) -> (bool);
         "get_all_created_products": () -> (vec Product) query;
 
         "approve_product": (nat32,ProductStatus) -> (opt bool);

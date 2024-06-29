@@ -27,7 +27,10 @@ export default function MainProducts() {
   const [updatedData, setUpdatedData] = useState(null);
   const [deletedData, setDeletedData] = useState(null);
   const [addedData, setAddedData] = useState(null);
+  const [massProductData, setMassProductData] = useState(false);
   const [showModal, setShowModal] = React.useState(false);
+  const [showAddMassProductModal, setShowAddMassProductModal] =
+    React.useState(false);
   const [itemId, setItemId] = React.useState(null);
   const [showAddMainProductModal, setShowAddMainProductModal] =
     React.useState(false);
@@ -74,7 +77,7 @@ export default function MainProducts() {
       }
       get_all_main_products();
     },
-    [updatedData, deletedData, addedData],
+    [updatedData, deletedData, addedData, massProductData],
   );
 
   // console.log(data);
@@ -109,7 +112,12 @@ export default function MainProducts() {
     setShowAddMainProductModal(!showAddMainProductModal);
     setAddedData(null);
   }
-
+  function AddMassProduct(itemId) {
+    setItemId(itemId);
+    setShowAddMassProductModal(!showAddMassProductModal);
+    setMassProductData(massProductData == true ? false : true);
+    closeDropdownPopover();
+  }
   return (
     <>
       <div className="flex-row items-center justify-between space-y-3 p-4 sm:flex sm:space-x-4 sm:space-y-0">
@@ -269,7 +277,7 @@ export default function MainProducts() {
                             'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
                             (color === 'black')
                           }
-                          onClick={(e) => e.preventDefault()}
+                          onClick={() => AddMassProduct(item.id)}
                         >
                           Mass Production
                         </button>
@@ -320,6 +328,14 @@ export default function MainProducts() {
         <LetgoLoginModal
           showLetgoLoginModal={showLetgoLoginModal}
           setShowLetgoLoginModal={setShowLetgoLoginModal}
+        />
+      )}
+      {showAddMassProductModal && (
+        <AddMassProductModal
+          showAddMainProductModal={showAddMainProductModal}
+          setShowAddMassProductModal={setShowAddMassProductModal}
+          data={data}
+          itemId={itemId}
         />
       )}
     </>
@@ -941,6 +957,122 @@ function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
                 className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
                 type="button"
                 onClick={() => setShowLetgoLoginModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
+    </>
+  );
+}
+
+function AddMassProductModal({
+  showAddMassProductModal,
+  setShowAddMassProductModal,
+  itemId,
+  data,
+}) {
+  const item = data.find((x) => x.id == itemId);
+
+  const toast = useToast();
+  const toastIdRef = React.useRef();
+  function addToast(result, message) {
+    toastIdRef.current = toast({
+      description: result,
+      colorScheme: result == 'success' ? 'green' : 'red',
+      status: result,
+      title: message,
+    });
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      quantity: 0,
+    },
+
+    onSubmit: (values, bag) => {
+      let model = {
+        barcode: item.barcode,
+      };
+      try {
+        async function create_bulk_product() {
+          const data =
+            await supply_chain_continious_model_backend.create_bulk_product(
+              model,
+              parseInt(values.quantity),
+            );
+          if (data == true) {
+            setTimeout(() => {
+              setShowAddMassProductModal(false);
+            }, '1000');
+            addToast('success', 'Products are created!');
+            setUpdatedData(data);
+          } else {
+            setTimeout(() => {
+              setShowAddMassProductModal(false);
+            }, '3000');
+            addToast('error', 'An error during update!');
+          }
+        }
+        create_bulk_product();
+      } catch (error) {
+        setTimeout(() => {
+          setShowAddMassProductModal(false);
+        }, '3000');
+        addToast('error', 'Error!');
+      }
+    },
+  });
+  return (
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+        <div className="relative mx-auto my-6 w-auto max-w-3xl">
+          {/*content*/}
+          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+            {/*header*/}
+            <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
+              <h2 className="text-3xl font-semibold">Add Mass Products</h2>
+              <button
+                className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
+                onClick={() => setShowModal(false)}
+              >
+                <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
+                  ×
+                </span>
+              </button>
+            </div>
+            {/*body*/}
+            <div className="relative flex-auto p-6">
+              <Box my={5} textAlign="left">
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl mt="2">
+                    <FormLabel>Quantity</FormLabel>
+                    <Input
+                      name="quantity"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.quantity}
+                      isInvalid={
+                        formik.touched.quantity && formik.errors.quantity
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <Button type="submit" mt="4" width="full" colorScheme="cyan">
+                    Add Mass Products
+                  </Button>
+                </form>
+              </Box>
+            </div>
+            {/*footer*/}
+            <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-6">
+              <button
+                className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+                type="button"
+                onClick={() => setShowAddMassProductModal(false)}
               >
                 Close
               </button>

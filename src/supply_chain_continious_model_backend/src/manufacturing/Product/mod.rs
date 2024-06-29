@@ -76,10 +76,10 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
 
 
 #[ic_cdk::update]
- pub async fn create_bulk_product( request: CreateProductRequest,quantity:u32) -> Option<bool> {
+ pub async fn create_bulk_product( request: CreateProductRequest,quantity:u32) -> bool {
     let product_control = check_if_already_produced(&request.barcode).await;
     if(!product_control.0){
-        return Some(false);
+        return false;
     }
     else{
 
@@ -91,7 +91,7 @@ pub async fn get_main_product_by_barcode(barcode:String) -> MainProduct {
         update_product_stock(&request.barcode, quantity as i64).await;
     }
 
-    return Some(true);
+    return true;
 }
 
 
