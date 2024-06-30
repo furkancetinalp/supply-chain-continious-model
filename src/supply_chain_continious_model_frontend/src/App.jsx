@@ -20,6 +20,7 @@ import RawMaterialAgreements from './components/contents/SourcingAndProcurement/
 import RawMaterialWarehouse from './components/contents/ProcurementWarehouse/RawMaterialWarehouse';
 import MainProducts from './components/contents/Manufacturing/MainProducts';
 import MassProducts from './components/contents/Manufacturing/MassProducts';
+import Orders from './components/contents/Order/Orders';
 const App = () => {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -36,6 +37,12 @@ const App = () => {
       title: 'Mass Products',
       src: 'Search',
       item: <MassProducts />,
+    },
+    {
+      title: 'Orders ',
+      src: 'Chart',
+      item: <Orders />,
+      gap: true,
     },
     {
       title: 'Demand Planning ',

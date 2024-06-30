@@ -11,11 +11,11 @@ use crate::{context::ORDERS, entities::orders::order::Order,entities::orders::or
 
 
 #[ic_cdk::update]
- pub async fn create_order(request: CreateOrderRequest) -> Option<bool> {
+ pub async fn create_order(request: CreateOrderRequest) -> bool {
     let products =assign_products_for_order(request.quantity as u32,request.barcode.clone()).await;
 
     if products.is_none(){
-        return None;
+        return false;
     }
     else{
         // let first_product = products.clone().unwrap().clone().first().unwrap().clone();
@@ -54,7 +54,7 @@ use crate::{context::ORDERS, entities::orders::order::Order,entities::orders::or
 
     
     
-    return Some(true);
+    return true;
 }
 
 

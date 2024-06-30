@@ -455,7 +455,7 @@ service : {
     //END --- MANUFACTURING
     
     //START --- ORDERS
-        "create_order":(CreateOrderRequest) -> (opt bool);
+        "create_order":(CreateOrderRequest) -> ( bool);
         "get_order_by_id" :(nat32) -> (Order);
         "get_all_orders" : () -> (vec Order);
         "get_order_details_by_order_id": (nat32) -> (vec OrderDetail);
