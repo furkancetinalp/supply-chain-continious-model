@@ -309,8 +309,8 @@ type CreateOrderRequest =
         customer_title:text;
         address:text;
         quantity:float32;
-        unit_price:float32;
-        total_price:float32;
+        // unit_price:float32;
+        // total_price:float32;
         order_date:text;
     };
 
