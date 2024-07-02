@@ -117,13 +117,13 @@ pub async fn get_all_orders() -> Vec< Order> {
 }
 
 #[ic_cdk::update]
- pub async fn update_order(order_id:u32,order_status:OrderStatus) -> bool {
+ pub async fn update_order(order_id:u32,order_status:OrderStatus,delivered_date:String) -> bool {
     let order_details = get_order_details_by_order_id(order_id).await;
     if (order_status == OrderStatus::Completed){
         for detail in order_details.iter(){
             update_product_status(detail.product_id, ProductStatus::Sold).await;
         }
-        update_order_status(order_id, OrderStatus::Completed).await;
+        update_order_status(order_id, OrderStatus::Completed,delivered_date).await;
         return true;
         //PRODUCTSTATUS: SOLD
         //ORDERSTATUS:COMPLETED
@@ -133,28 +133,29 @@ pub async fn get_all_orders() -> Vec< Order> {
             update_product_status(detail.product_id, ProductStatus::Approved).await;
         }
         if(order_status == OrderStatus::Rejected){
-            update_order_status(order_id, OrderStatus::Rejected).await;
+            update_order_status(order_id, OrderStatus::Rejected,delivered_date).await;
         }
         else{
-            update_order_status(order_id, OrderStatus::Cancelled).await;
+            update_order_status(order_id, OrderStatus::Cancelled,delivered_date).await;
         }
         return true;
         //PRODUCTSTATUS: SET AGAIN TO APPROVED (AFTER MANUCACTURING STAGE)
         //ORDERSTATUS:REJECTED or CANCELLED
     }
     else{
-        update_order_status(order_id, order_status).await;
+        update_order_status(order_id, order_status,delivered_date).await;
         return true;
     }
 
 }
 
 
-async fn update_order_status(order_id:u32,status:OrderStatus) {
+async fn update_order_status(order_id:u32,status:OrderStatus,delivered_date:String) {
     ORDERS.with(|orders|{
        let mut orders = orders.borrow_mut();
        let   item = orders.get_mut(&order_id).unwrap();
        item.order_status = status;
+       item.delivery_date=delivered_date;
    });
 }
 
