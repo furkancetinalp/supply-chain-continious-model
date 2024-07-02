@@ -49,7 +49,7 @@ export default function RecentOrders() {
                 <td>{format(new Date(order.order_date), 'dd MMM yyyy')}</td>
                 <td>{order.order_total}</td>
                 <td>{order.shipment_address}</td>
-                <td>{getOrderStatus(order.current_order_status)}</td>
+                {/* <td>{getOrderStatus(order.current_order_status)}</td> */}
               </tr>
             ))}
           </tbody>

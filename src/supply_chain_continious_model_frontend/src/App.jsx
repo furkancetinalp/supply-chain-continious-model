@@ -40,7 +40,7 @@ const App = () => {
     },
     {
       title: 'Orders ',
-      src: 'Chart',
+      src: 'Chat',
       item: <Orders />,
       gap: true,
     },

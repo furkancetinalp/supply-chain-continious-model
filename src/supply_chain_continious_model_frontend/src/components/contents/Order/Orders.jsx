@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { supply_chain_continious_model_backend } from '../../../../../declarations/supply_chain_continious_model_backend';
 import Popper from 'popper.js';
+import { Int } from '@dfinity/candid/lib/cjs/idl';
 
 export default function Orders() {
   const [data, setData] = useState(null);
@@ -323,17 +324,9 @@ export default function Orders() {
           ))}
         </tbody>
       </table>
-      {showModal && (
-        <UpdateRawMaterialAgreementModal
-          showModal={showModal}
-          setShowModal={setShowModal}
-          itemId={itemId}
-          data={data}
-          setUpdatedData={setUpdatedData}
-        />
-      )}
+
       {showAddOrderModal && (
-        <AddRawMaterialAgreementModal
+        <AddOrderModal
           setShowModal={setShowModal}
           setShowAddOrderModal={setShowAddOrderModal}
           setAddedData={setAddedData}
@@ -343,14 +336,7 @@ export default function Orders() {
   );
 }
 
-function UpdateRawMaterialAgreementModal({
-  showModal,
-  setShowModal,
-  itemId,
-  data,
-  setUpdatedData,
-}) {
-  const item = data.find((x) => x.id == itemId);
+function AddOrderModal({ setShowModal, setShowAddOrderModal, setAddedData }) {
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -364,248 +350,30 @@ function UpdateRawMaterialAgreementModal({
 
   const formik = useFormik({
     initialValues: {
-      name: item.product_name,
-      amount: item.amount,
-      unit_price: item.unit_price,
-      company_name: item.company_name,
-      agreement_date: item.agreement_date,
-      warehouse_name: item.warehouse_name,
-      delivery_date: item.delivery_date,
+      barcode: '',
+      customer_title: '',
+      address: '',
+      quantity: '',
+      order_date: new Date().toJSON().slice(0, 10),
     },
     onSubmit: (values, bag) => {
       let model = {
-        id: parseInt(item.id),
-        product_name: values.name,
-        amount: Number(values.amount),
-        unit_price: Number(values.unit_price),
-        company_name: values.company_name,
-        agreement_date: values.agreement_date,
-        delivery_date: values.delivery_date,
-        warehouse_name: values.warehouse_name,
+        barcode: values.barcode,
+        customer_title: values.customer_title,
+        address: values.address,
+        quantity: Number(values.quantity),
+        order_date: values.order_date,
       };
 
       try {
-        async function update_raw_material_agreement() {
+        async function add_order() {
           const data =
-            await supply_chain_continious_model_backend.update_raw_material_agreement(
-              model,
-            );
-          if (data == true) {
-            setTimeout(() => {
-              setShowModal(false);
-            }, '1000');
-            addToast('success', 'Item is updated');
-            setUpdatedData(data);
-          } else {
-            setTimeout(() => {
-              setShowModal(false);
-            }, '3000');
-            addToast('error', 'An error during update!');
-          }
-        }
-        update_raw_material_agreement();
-      } catch (error) {
-        setTimeout(() => {
-          setShowModal(false);
-        }, '3000');
-        addToast('error', 'Error!');
-      }
-    },
-  });
-  return (
-    <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
-        <div className="relative mx-auto my-6 w-auto max-w-3xl">
-          {/*content*/}
-          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
-            {/*header*/}
-            <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">
-                Update Raw Material Plan
-              </h2>
-              <button
-                className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
-                onClick={() => setShowModal(false)}
-              >
-                <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
-                  ×
-                </span>
-              </button>
-            </div>
-            {/*body*/}
-            <div className="relative flex-auto p-6">
-              <Box my={5} textAlign="left">
-                <form onSubmit={formik.handleSubmit}>
-                  <FormControl>
-                    <FormLabel>Agreement Date</FormLabel>
-                    <Input
-                      name="agreement_date"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.agreement_date}
-                      isInvalid={
-                        formik.touched.agreement_date &&
-                        formik.errors.agreement_date
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Name</FormLabel>
-                    <Input
-                      name="name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.name}
-                      isInvalid={formik.touched.name && formik.errors.name}
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl>
-                    <FormLabel>Delivery Date</FormLabel>
-                    <Input
-                      name="delivery_date"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.delivery_date}
-                      isInvalid={
-                        formik.touched.delivery_date &&
-                        formik.errors.delivery_date
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Amount</FormLabel>
-                    <Input
-                      name="amount"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.amount}
-                      isInvalid={formik.touched.amount && formik.errors.amount}
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Company Name</FormLabel>
-                    <Input
-                      name="company_name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.company_name}
-                      isInvalid={
-                        formik.touched.company_name &&
-                        formik.errors.company_name
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Unit Price</FormLabel>
-                    <Input
-                      name="unit_price"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.unit_price}
-                      isInvalid={
-                        formik.touched.unit_price && formik.errors.unit_price
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Warehouse Name</FormLabel>
-                    <Input
-                      name="warehouse_name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.warehouse_name}
-                      isInvalid={
-                        formik.touched.warehouse_name &&
-                        formik.errors.warehouse_name
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <Button type="submit" mt="4" width="full" colorScheme="blue">
-                    Update
-                  </Button>
-                </form>
-              </Box>
-            </div>
-            {/*footer*/}
-            <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-6">
-              <button
-                className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-              {/* <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Save Changes
-              </button> */}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
-    </>
-  );
-}
-
-function AddRawMaterialAgreementModal({
-  setShowModal,
-  setShowAddOrderModal,
-  setAddedData,
-}) {
-  const toast = useToast();
-  const toastIdRef = React.useRef();
-  function addToast(result, message) {
-    toastIdRef.current = toast({
-      description: result,
-      colorScheme: result == 'success' ? 'green' : 'red',
-      status: result,
-      title: message,
-    });
-  }
-
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      amount: 0,
-      unit_price: 0,
-      company_name: '',
-      agreement_date: new Date().toJSON().slice(0, 10),
-      warehouse_name: '',
-      delivery_date: new Date().toJSON().slice(0, 10),
-    },
-    onSubmit: (values, bag) => {
-      let model = {
-        product_name: values.name,
-        amount: Number(values.amount),
-        unit_price: Number(values.unit_price),
-        company_name: values.company_name,
-        agreement_date: values.agreement_date,
-        delivery_date: values.delivery_date,
-        warehouse_name: values.warehouse_name,
-      };
-
-      try {
-        async function add_raw_material_agreement() {
-          const data =
-            await supply_chain_continious_model_backend.add_raw_material_agreement(
-              model,
-            );
+            await supply_chain_continious_model_backend.create_order(model);
           if (data == true) {
             setTimeout(() => {
               setShowAddOrderModal(false);
             }, '1000');
-            addToast('success', 'Item is added');
+            addToast('success', 'Order is added');
             setAddedData(data);
           } else {
             setTimeout(() => {
@@ -614,7 +382,7 @@ function AddRawMaterialAgreementModal({
             addToast('error', 'An error during add!');
           }
         }
-        add_raw_material_agreement();
+        add_order();
       } catch (error) {
         setTimeout(() => {
           setShowAddOrderModal(false);
@@ -631,7 +399,7 @@ function AddRawMaterialAgreementModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">Add Raw Material Offer</h2>
+              <h2 className="text-3xl font-semibold">Create Order</h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -646,92 +414,54 @@ function AddRawMaterialAgreementModal({
               <Box my={5} textAlign="left">
                 <form onSubmit={formik.handleSubmit}>
                   <FormControl>
-                    <FormLabel>Requested Date</FormLabel>
+                    <FormLabel>Barcode</FormLabel>
                     <Input
-                      name="requested_date"
+                      name="barcode"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.requested_date}
+                      value={formik.values.barcode}
                       isInvalid={
-                        formik.touched.requested_date &&
-                        formik.errors.requested_date
+                        formik.touched.barcode && formik.errors.barcode
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Customer Title</FormLabel>
                     <Input
-                      name="name"
+                      name="customer_title"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.name}
-                      isInvalid={formik.touched.name && formik.errors.name}
+                      value={formik.values.customer_title}
+                      isInvalid={
+                        formik.touched.customer_title &&
+                        formik.errors.customer_title
+                      }
                     ></Input>
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel>Delivery Date</FormLabel>
+                    <FormLabel>Address</FormLabel>
                     <Input
-                      name="delivery_date"
+                      name="address"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.delivery_date}
+                      value={formik.values.address}
                       isInvalid={
-                        formik.touched.delivery_date &&
-                        formik.errors.delivery_date
+                        formik.touched.address && formik.errors.address
                       }
                     ></Input>
                   </FormControl>
 
                   <FormControl mt="2">
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel>Quantity</FormLabel>
                     <Input
-                      name="amount"
+                      name="quantity"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.amount}
-                      isInvalid={formik.touched.amount && formik.errors.amount}
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Company Name</FormLabel>
-                    <Input
-                      name="company_name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.company_name}
+                      value={formik.values.quantity}
                       isInvalid={
-                        formik.touched.company_name &&
-                        formik.errors.company_name
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Unit Price</FormLabel>
-                    <Input
-                      name="unit_price"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.unit_price}
-                      isInvalid={
-                        formik.touched.unit_price && formik.errors.unit_price
-                      }
-                    ></Input>
-                  </FormControl>
-
-                  <FormControl mt="2">
-                    <FormLabel>Warehouse Name</FormLabel>
-                    <Input
-                      name="warehouse_name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.warehouse_name}
-                      isInvalid={
-                        formik.touched.warehouse_name &&
-                        formik.errors.warehouse_name
+                        formik.touched.quantity && formik.errors.quantity
                       }
                     ></Input>
                   </FormControl>
