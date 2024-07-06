@@ -36,6 +36,8 @@ export default function MainProducts() {
     React.useState(false);
 
   const [showLetgoLoginModal, setShowLetgoLoginModal] = useState(false);
+  const [showsendItemToLetgoModal, setShowsendItemToLetgoModal] =
+    useState(false);
 
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const btnDropdownRef = createRef();
@@ -867,37 +869,38 @@ function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
 
     onSubmit: (values, bag) => {
       let model = {
-        id: parseInt(item.id),
-        name: values.name,
-        district: values.district,
-        province: values.province,
-        country: values.country,
-        location_detail: values.location_detail,
+        email: values.email,
+        password: values.password,
       };
 
       try {
-        async function update_raw_material_warehouse() {
-          const data =
-            await supply_chain_continious_model_backend.update_raw_material_warehouse(
-              model,
-            );
-          if (data == true) {
+        async function login_letgo() {
+          const data = await supply_chain_continious_model_backend.login_letgo(
+            values.email,
+            values.password,
+          );
+          console.log(data);
+          const id = data['Ok']['id'];
+          const token = data['Ok']['token'];
+          if (id != undefined) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('userid', id);
             setTimeout(() => {
-              setShowModal(false);
+              setShowLetgoLoginModal(false);
             }, '1000');
-            addToast('success', 'Item is updated');
+            addToast('success', 'Success');
             setUpdatedData(data);
           } else {
             setTimeout(() => {
-              setShowModal(false);
+              setShowLetgoLoginModal(false);
             }, '3000');
-            addToast('error', 'An error during update!');
+            addToast('error', 'An error during login!');
           }
         }
-        update_raw_material_warehouse();
+        login_letgo();
       } catch (error) {
         setTimeout(() => {
-          setShowModal(false);
+          setShowLetgoLoginModal(false);
         }, '3000');
         addToast('error', 'Error!');
       }
