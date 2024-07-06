@@ -329,6 +329,18 @@ type CreateOrderRequest =
 
 //END --- ORDERS
 
+
+//START --- CATEGORIES
+
+ type Categories = 
+    record {
+        id: text;
+        key:text;
+        name: text;
+    };
+
+//END --- CATEGORIES
+
 type Time = record{
     year:nat16;
     month:nat8;
@@ -463,5 +475,6 @@ service : {
     //END --- ORDERS
 
         "login_letgo": (email:text,password:text) -> (ResultLetgo) ;
-
+        "get_all_categories": () -> (vec Categories) query;
+        "import_categories": () -> (bool)
 }

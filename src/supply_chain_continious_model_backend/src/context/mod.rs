@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use crate::entities::demand_planning::Demand;
+use crate::entities::integration::Letgo::categories::Categories;
 use crate::entities::manufacturing::main_product::MainProduct;
 use crate::entities::manufacturing::product::{self, Product};
 use crate::entities::orders::order::Order;
@@ -31,5 +32,6 @@ thread_local! {
     pub static ORDERS: RefCell<HashMap<u32, Order>> = RefCell::default();
     pub static ORDER_DETAILS: RefCell<HashMap<u32, OrderDetail>> = RefCell::default();
     
+    pub static CATEGORIES: RefCell<HashMap<u32, Categories>> = RefCell::default();
 
 }
