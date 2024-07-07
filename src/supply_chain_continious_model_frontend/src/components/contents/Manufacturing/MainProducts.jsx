@@ -40,6 +40,13 @@ export default function MainProducts() {
     useState(false);
 
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
+  const [selectedDropdownId, setSelectedDropdownId] = useState(false);
+
+  const handleDropdown = (id) => {
+    setDropdownPopoverShow(!dropdownPopoverShow);
+    setSelectedDropdownId(id);
+  };
+
   const btnDropdownRef = createRef();
   const popoverDropdownRef = createRef();
   const openDropdownPopover = () => {
@@ -169,28 +176,29 @@ export default function MainProducts() {
       <table className="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Image
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Name
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Barcode
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Category
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Brand
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Price
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Stock
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              Status
+            </th>
+            <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Action
             </th>
           </tr>
@@ -203,7 +211,7 @@ export default function MainProducts() {
                   scope="row"
                   className="flex items-center whitespace-nowrap font-medium text-gray-900 dark:text-white"
                 >
-                  <div className="group flex w-[320px] justify-center gap-2 max-md:flex-col">
+                  <div className="group flex w-[250px] justify-center gap-2 max-md:flex-col">
                     {item.image_list.slice(0, 2).map((url) => (
                       <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
                         <img
@@ -219,7 +227,6 @@ export default function MainProducts() {
               <td className="whitespace-nowrap px-6 py-4">{item.name}</td>
               <td className="px-6 py-4">{item.barcode}</td>
               <td className="px-6 py-4">{item.category}</td>
-              <td className="px-6 py-4">{item.brand}</td>
 
               <td className="px-6 py-4">{item.price}</td>
               <td className="px-6 py-4">
@@ -227,6 +234,8 @@ export default function MainProducts() {
                   {item.total_amount}
                 </span>
               </td>
+              <td className="px-6 py-4">{item.status}</td>
+
               <td className="px-2 py-4">
                 {/* <button
                   onClick={() => updateMainProduct(item.id)}
@@ -250,7 +259,7 @@ export default function MainProducts() {
                   DeleteMainProduct={DeleteMainProduct}
                   itemId={itemId}
                 /> */}
-                <div className="flex flex-wrap">
+                {/* <div className="flex flex-wrap">
                   <div className="w-full px-4 sm:w-6/12 md:w-4/12">
                     <div className="relative inline-flex w-full align-middle">
                       <button
@@ -285,7 +294,7 @@ export default function MainProducts() {
                           }
                           onClick={() => AddMassProduct(item.id)}
                         >
-                          Mass Production
+                          Produce
                         </button>
                         <button
                           className={
@@ -308,7 +317,67 @@ export default function MainProducts() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+                <>
+                  <button
+                    id="dropdownDefaultButton"
+                    data-dropdown-toggle="dropdown"
+                    className="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    type="button"
+                    onClick={() => handleDropdown(item.id)}
+                  >
+                    Actions
+                    <svg
+                      className="ms-3 h-2.5 w-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    id="dropdown"
+                    className={`${!dropdownPopoverShow || selectedDropdownId != item.id ? 'hidden' : ''} w-25 z-10 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700`}
+                  >
+                    <ul
+                      className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                      aria-labelledby="dropdownDefaultButton"
+                    >
+                      <li>
+                        <button
+                          onClick={() => AddMassProduct(item.id)}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Produce
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => updateMainProduct(item.id)}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Update
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => DeleteMainProduct(item.id)}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Delete
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </>
               </td>
             </tr>
           ))}

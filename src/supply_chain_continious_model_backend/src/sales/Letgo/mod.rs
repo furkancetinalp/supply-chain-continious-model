@@ -255,7 +255,7 @@ async fn import_products(user_id: String, token: String) -> String {
                         let unique_id:u32 = idgenerator::create_id().await;
                         let category_name = get_category_by_id(item.category_id.parse().unwrap()).await.key;
                         let product = MainProduct {
-                            id: item.id.clone().parse().unwrap(),
+                            id: unique_id,
                             name: item.title,
                             description: item.description,
                             image_url_list: image_list,
