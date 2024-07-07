@@ -9,6 +9,7 @@ pub(crate) struct MainProduct{
     pub id:u32,
     pub identity:String,
     pub name:String, //product name
+    pub description:String, //from marketplace
     pub barcode :String,
     pub total_amount:u32,
     pub unit: Unit,
@@ -17,6 +18,9 @@ pub(crate) struct MainProduct{
     pub brand:String,
     pub created_date:String,
     pub image_list:Vec<String>,
+    pub image_url_list:Vec<String>,
+    pub status:String,
+    pub marketplace_item_id:String,
     // pub image_list:Vec<ImageList>,
 }
 

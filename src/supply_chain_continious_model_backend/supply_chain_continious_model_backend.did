@@ -273,6 +273,7 @@ type MainProduct =
         identity:text;
         id: nat32;
         name: text;
+        description:text;
         barcode:text;
         total_amount: nat32;
         unit: Unit;
@@ -281,6 +282,9 @@ type MainProduct =
         brand:text;
         created_date:text;
         image_list:vec text;
+        image_url_list:vec text;
+        status:text;
+        marketplace_item_id:text;
 
     };
 //END --- MANUFACTURING
@@ -476,5 +480,6 @@ service : {
 
         "login_letgo": (email:text,password:text) -> (ResultLetgo) ;
         "get_all_categories": () -> (vec Categories) query;
-        "import_categories": () -> (bool)
+        "import_categories": () -> (bool);
+        "import_products" :(text,text) -> (text);
 }

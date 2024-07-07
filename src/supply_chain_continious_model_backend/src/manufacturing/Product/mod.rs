@@ -26,6 +26,11 @@ pub(crate) mod update_main_product_request;
         brand:request.brand,
         unit:Unit::Piece,
         image_list:request.image_list,
+        status:"notmatched".to_string(),
+        description:"".to_string(),
+        image_url_list:Vec::new(),
+        marketplace_item_id:"".to_string(),
+
   
     };
     MAIN_PRODUCTS.with(|p| p.borrow_mut().insert(unique_id, data));
@@ -295,6 +300,10 @@ pub async fn check_if_data_exists(id:u32) -> bool {
         unit:Unit::Piece,
         image_list:request.image_list,
         created_date:data.created_date,
+        status:data.status,
+        description:data.description,
+        image_url_list:data.image_url_list,
+        marketplace_item_id:data.marketplace_item_id,
     };
     MAIN_PRODUCTS.with(|p| p.borrow_mut().insert(request.id, data));
     return true;
@@ -311,6 +320,25 @@ pub async fn check_single_product_by_barcode(barcode:String) -> bool {
         }
         else{
             return true;
+        }
+    });
+
+    return data;
+}
+
+
+#[ic_cdk::query]
+pub async fn get_main_product_by_name(name:String) -> Option<MainProduct> {
+    let data = MAIN_PRODUCTS.with(|products| {
+        let binding = products.borrow();
+        let filter = binding.iter()
+        .find(|& x| x.1.identity == ic_cdk::caller().to_string() && x.1.name.to_lowercase()==name.to_lowercase());
+        
+        if filter.is_some(){
+            return Some(filter.unwrap().1.clone())
+        }
+        else{
+            return None;
         }
     });
 
