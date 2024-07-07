@@ -212,15 +212,26 @@ export default function MainProducts() {
                   className="flex items-center whitespace-nowrap font-medium text-gray-900 dark:text-white"
                 >
                   <div className="group flex w-[250px] justify-center gap-2 max-md:flex-col">
-                    {item.image_list.slice(0, 2).map((url) => (
-                      <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
-                        <img
-                          src={'data:image/jpeg;base64,' + url}
-                          alt={`${item.id}_image`}
-                          className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-[140px]"
-                        />
-                      </article>
-                    ))}
+                    {item.status === 'unmatched' &&
+                      item.image_list.slice(0, 2).map((url) => (
+                        <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
+                          <img
+                            src={'data:image/jpeg;base64,' + url}
+                            alt={`${item.id}_image`}
+                            className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-[140px]"
+                          />
+                        </article>
+                      ))}
+                    {item.status !== 'unmatched' &&
+                      item.image_url_list.slice(0, 2).map((url) => (
+                        <article className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-gradient-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:bg-white/30 after:opacity-0 after:backdrop-blur after:transition-all focus-within:ring focus-within:ring-indigo-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:group-focus-within:[&:not(:focus-within):not(:hover)]:w-[20%] md:group-focus-within:[&:not(:focus-within):not(:hover)]:after:opacity-100 md:group-hover:[&:not(:hover)]:w-[20%] md:group-hover:[&:not(:hover)]:after:opacity-100">
+                          <img
+                            src={url}
+                            alt={`${item.id}_image`}
+                            className="mr-2 h-[140px] rounded-full object-cover md:h-[140px] md:w-[140px]"
+                          />
+                        </article>
+                      ))}
                   </div>
                 </th>
               </td>

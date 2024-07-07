@@ -26,7 +26,7 @@ pub(crate) mod update_main_product_request;
         brand:request.brand,
         unit:Unit::Piece,
         image_list:request.image_list,
-        status:"notmatched".to_string(),
+        status:"unmatched".to_string(),
         description:"".to_string(),
         image_url_list:Vec::new(),
         marketplace_item_id:"".to_string(),
