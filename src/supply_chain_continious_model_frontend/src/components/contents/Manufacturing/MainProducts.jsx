@@ -41,7 +41,9 @@ export default function MainProducts() {
 
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const [selectedDropdownId, setSelectedDropdownId] = useState(false);
-
+  const [logged, setLogged] = useState(
+    localStorage.getItem('token') != undefined ? true : false,
+  );
   const handleDropdown = (id) => {
     setDropdownPopoverShow(!dropdownPopoverShow);
     setSelectedDropdownId(id);
@@ -62,6 +64,12 @@ export default function MainProducts() {
   let color = 'bg-gray-800';
 
   function LoginLetgo() {
+    if (logged) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userid');
+      setLogged(false);
+      return null;
+    }
     setShowLetgoLoginModal(!showLetgoLoginModal);
   }
 
@@ -75,7 +83,25 @@ export default function MainProducts() {
       title: message,
     });
   }
+  function ImportProducts() {
+    let userid = localStorage.getItem('userid');
+    let token = localStorage.getItem('token');
 
+    async function import_products() {
+      const data = await supply_chain_continious_model_backend.import_products(
+        userid,
+        token,
+      );
+      if (data == 'true') {
+        setTimeout(() => {}, '2000');
+        addToast('success', 'Product import is successful!');
+      } else {
+        setTimeout(() => {}, '3000');
+        addToast('error', 'An error during import!: ', data);
+      }
+    }
+    import_products();
+  }
   useEffect(
     function () {
       async function get_all_main_products() {
@@ -86,7 +112,7 @@ export default function MainProducts() {
       }
       get_all_main_products();
     },
-    [updatedData, deletedData, addedData, massProductData],
+    [updatedData, deletedData, addedData, massProductData, logged],
   );
 
   // console.log(data);
@@ -103,6 +129,7 @@ export default function MainProducts() {
       const data =
         await supply_chain_continious_model_backend.delete_main_product_by_id(
           itemId,
+          localStorage.getItem('token'),
         );
       if (data == true) {
         setTimeout(() => {}, '2000');
@@ -151,9 +178,27 @@ export default function MainProducts() {
             >
               <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
             </svg>
-            Login Letgo
+            {logged ? 'Logout Letgo' : 'Login Letgo'}
           </button>
 
+          {logged && (
+            <button
+              type="button"
+              onClick={() => ImportProducts()}
+              className="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-[#b5bc2a] px-4 py-2 text-sm font-medium text-gray-900 hover:bg-[#55b6d1] focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 md:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="-ml-1 mr-2 h-3.5 w-3.5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+              </svg>
+              Import Products From Letgo
+            </button>
+          )}
           <button
             type="button"
             onClick={() => AddMainProduct()}
@@ -414,6 +459,7 @@ export default function MainProducts() {
         <LetgoLoginModal
           showLetgoLoginModal={showLetgoLoginModal}
           setShowLetgoLoginModal={setShowLetgoLoginModal}
+          setLogged={setLogged}
         />
       )}
       {showAddMassProductModal && (
@@ -929,7 +975,11 @@ MainProducts.propTypes = {
   onFileChange: PropTypes.func,
 };
 
-function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
+function LetgoLoginModal({
+  showLetgoLoginModal,
+  setShowLetgoLoginModal,
+  setLogged,
+}) {
   const toast = useToast();
   const toastIdRef = React.useRef();
   function addToast(result, message) {
@@ -959,12 +1009,13 @@ function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
             values.email,
             values.password,
           );
-          console.log(data);
-          const id = data['Ok']['id'];
-          const token = data['Ok']['token'];
-          if (id != undefined) {
+
+          if (data['Ok'] != undefined) {
+            const id = data['Ok']['id'];
+            const token = data['Ok']['token'];
             localStorage.setItem('token', token);
             localStorage.setItem('userid', id);
+            setLogged(true);
             setTimeout(() => {
               setShowLetgoLoginModal(false);
             }, '1000');
@@ -972,6 +1023,7 @@ function LetgoLoginModal({ showLetgoLoginModal, setShowLetgoLoginModal }) {
             setUpdatedData(data);
           } else {
             setTimeout(() => {
+              setLogged(false);
               setShowLetgoLoginModal(false);
             }, '3000');
             addToast('error', 'An error during login!');

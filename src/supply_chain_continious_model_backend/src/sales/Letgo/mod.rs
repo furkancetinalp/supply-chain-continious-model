@@ -282,8 +282,8 @@ async fn import_products(user_id: String, token: String) -> String {
                 //     response.status
                 // ))
                 format!(
-                    "The http_request resulted in an error. Code: {:?}, Message: {:?}",
-                    response.status, str::from_utf8(&response.body)
+                    "{:?}",
+                    str::from_utf8(&response.body)
                 ).to_string()
                 // return "false".to_string();
             }
@@ -298,6 +298,49 @@ async fn import_products(user_id: String, token: String) -> String {
             //     "The http_request resulted in an error. Code: {:?}, Message: {}",
             //     code, message
             // ))
+        },
+    }
+}
+
+
+
+pub async fn delete_product_from_marketplace(item_id:String,token:String) -> bool {
+    let url = format!("https://www.letgo.com/api/items/{item_id}?reason=close");
+
+    let request_headers = vec![HttpHeader {
+        name: "Content-Type".to_string(),
+        value: "application/json".to_string(),
+        
+    },HttpHeader {
+        name: "Authorization".to_string(),
+        value: "Bearer ".to_string() + &token,
+    },];
+
+    let request = CanisterHttpRequestArgument {
+        url,
+        method: HttpMethod::GET,
+        body: None,
+        max_response_bytes: None,
+        transform: None,
+        headers: request_headers,
+    };
+
+    //if Ok => deserializing response
+    //else => returning a string message
+    match http_request(request,1_603_123_200).await {
+        Ok((response,)) => {
+            if response.status == 204 as u32 {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        Err((code, message)) => {
+            // Err(format!(
+            //     "The http_request resulted in an error. Code: {:?}, Message: {}",
+            //     code, message
+            // ))
+            return false;
         },
     }
 }

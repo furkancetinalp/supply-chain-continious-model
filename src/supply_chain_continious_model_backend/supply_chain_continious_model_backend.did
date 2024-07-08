@@ -455,7 +455,7 @@ service : {
         "get_all_main_products": () -> (vec MainProduct) query;
         "get_main_product_by_barcode" : (barcode:text) -> (MainProduct) query;
         "get_main_product_by_id": (nat32) -> (MainProduct);
-        "delete_main_product_by_id" :(nat32) -> (bool);
+        "delete_main_product_by_id" :(nat32,text) -> (bool);
         "update_main_product": (UpdateMainProductRequest) -> ( bool);
 
 

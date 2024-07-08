@@ -1,6 +1,6 @@
 pub(crate) mod create_product_request;
 pub(crate) mod create_main_product_request;
-use crate::{context::{MAIN_PRODUCTS, PRODUCTS}, entities::{manufacturing::{main_product::MainProduct, product::Product}, product_status::ProductStatus, unit::Unit}};
+use crate::{context::{MAIN_PRODUCTS, PRODUCTS}, entities::{manufacturing::{main_product::MainProduct, product::Product}, product_status::ProductStatus, unit::Unit}, sales::Letgo::delete_product_from_marketplace};
 use create_product_request::CreateProductRequest;
 use create_main_product_request::CreateMainProductRequest;
 use update_main_product_request::UpdateMainProductRequest;
@@ -259,25 +259,49 @@ pub async fn check_if_data_exists(id:u32) -> bool {
 
 
 #[ic_cdk::update]
- pub async fn delete_main_product_by_id(id:u32) -> bool {
+ pub async fn delete_main_product_by_id(id:u32,token:String) -> bool {
     let main_product = get_main_product_by_id(id).await;
     let check = check_single_product_by_barcode(main_product.barcode).await;
     if(check == false){
         return false;
      }
      else{
-        let data = MAIN_PRODUCTS.with(|item|{
-            let mut items = item.borrow_mut();
-            let item = items.remove(&id);
-            return item;
-        });
-        if( data.is_some()){
-         
-            return true;
+        let item = get_main_product_by_id(id).await;
+        if(item.status !="unmatched"){
+            let marketplace_result = delete_product_from_marketplace(item.marketplace_item_id,token).await;
+            if marketplace_result == false{
+                return false;
+            }
+            else{
+                let data = MAIN_PRODUCTS.with(|item|{
+                    let mut items = item.borrow_mut();
+                    let item = items.remove(&id);
+                    return item;
+                });
+                if( data.is_some()){
+                 
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
         }
         else{
-            return false;
+            let data = MAIN_PRODUCTS.with(|item|{
+                let mut items = item.borrow_mut();
+                let item = items.remove(&id);
+                return item;
+            });
+            if( data.is_some()){
+             
+                return true;
+            }
+            else{
+                return false;
+            }
         }
+        
      }
    
 
