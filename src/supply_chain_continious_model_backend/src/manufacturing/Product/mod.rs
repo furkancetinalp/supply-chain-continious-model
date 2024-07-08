@@ -266,42 +266,18 @@ pub async fn check_if_data_exists(id:u32) -> bool {
         return false;
      }
      else{
-        let item = get_main_product_by_id(id).await;
-        if(item.status !="unmatched"){
-            let marketplace_result = delete_product_from_marketplace(item.marketplace_item_id,token).await;
-            if marketplace_result == false{
-                return false;
-            }
-            else{
-                let data = MAIN_PRODUCTS.with(|item|{
-                    let mut items = item.borrow_mut();
-                    let item = items.remove(&id);
-                    return item;
-                });
-                if( data.is_some()){
-                 
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
+        let data = MAIN_PRODUCTS.with(|item|{
+            let mut items = item.borrow_mut();
+            let item = items.remove(&id);
+            return item;
+        });
+        if( data.is_some()){
+
+            return true;
         }
         else{
-            let data = MAIN_PRODUCTS.with(|item|{
-                let mut items = item.borrow_mut();
-                let item = items.remove(&id);
-                return item;
-            });
-            if( data.is_some()){
-             
-                return true;
-            }
-            else{
-                return false;
-            }
+            return false;
         }
-        
      }
    
 
