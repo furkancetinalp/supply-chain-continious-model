@@ -66,12 +66,6 @@ export default function Orders() {
 
   // console.log(data);
 
-  function updateRawMaterialAgreement(itemId) {
-    setShowModal(!showModal);
-    setItemId(itemId);
-    setUpdatedData(null);
-  }
-
   function DeleteRawMaterialAgreement(itemId) {
     async function delete_raw_material_agreement_by_id() {
       const data =
