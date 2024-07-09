@@ -291,7 +291,7 @@ function UpdateRawMaterialAgreementModal({
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
               <h2 className="text-3xl font-semibold">
-                Update Raw Material Plan
+                Update Raw Material Agreement
               </h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
@@ -501,7 +501,9 @@ function AddRawMaterialAgreementModal({
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             {/*header*/}
             <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-              <h2 className="text-3xl font-semibold">Add Raw Material Offer</h2>
+              <h2 className="text-3xl font-semibold">
+                Add Raw Material Agreement
+              </h2>
               <button
                 className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -537,6 +539,20 @@ function AddRawMaterialAgreementModal({
                       onBlur={formik.handleBlur}
                       value={formik.values.name}
                       isInvalid={formik.touched.name && formik.errors.name}
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>Agreement Date</FormLabel>
+                    <Input
+                      name="agreement_date"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.agreement_date}
+                      isInvalid={
+                        formik.touched.agreement_date &&
+                        formik.errors.agreement_date
+                      }
                     ></Input>
                   </FormControl>
 
