@@ -89,9 +89,10 @@ export default function TransactionChart() {
         await supply_chain_continious_model_backend.get_all_raw_material_agreements();
       setAgreements(agreements);
 
-      console.log(orders);
-      console.log(new Date(orders.at(0).order_date).getMonth());
+      // console.log(orders);
+      // console.log(new Date(orders.at(0).order_date).getMonth());
 
+      // console.log('agreements', agreements);
       let outcome_jan = agreements
         ?.filter((x) => new Date(x.agreement_date).getMonth() == 0)
         .reduce((accum, item) => accum + item.total_price, 0);
