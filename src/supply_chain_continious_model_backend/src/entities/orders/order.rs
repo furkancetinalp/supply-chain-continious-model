@@ -18,5 +18,6 @@ pub struct Order{
     pub order_status: OrderStatus,
     pub delivery_date:String,
     pub created_date:String,
+    pub customer_profile:String,
 }
 

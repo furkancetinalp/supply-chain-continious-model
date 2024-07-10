@@ -41,7 +41,8 @@ use crate::{context::ORDERS, entities::orders::order::Order,entities::orders::or
             order_date:request.order_date,
             order_status:OrderStatus::Received,
             delivery_date:String::new(),
-            created_date
+            created_date,
+            customer_profile:request.customer_profile,
 
       
         };

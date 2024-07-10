@@ -164,6 +164,9 @@ export default function Orders() {
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              Profile
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Action
             </th>
           </tr>
@@ -193,6 +196,9 @@ export default function Orders() {
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 {Object.keys(item.order_status)[0]}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4">
+                {item.customer_profile}
               </td>
               <td className="px-2 py-4">
                 {/* <button
@@ -349,6 +355,7 @@ function AddOrderModal({ setShowModal, setShowAddOrderModal, setAddedData }) {
       address: '',
       quantity: '',
       order_date: new Date().toJSON().slice(0, 10),
+      customer_profile: 'individual',
     },
     onSubmit: (values, bag) => {
       let model = {
@@ -357,6 +364,7 @@ function AddOrderModal({ setShowModal, setShowAddOrderModal, setAddedData }) {
         address: values.address,
         quantity: Number(values.quantity),
         order_date: values.order_date,
+        customer_profile: values.customer_profile,
       };
 
       try {
@@ -469,6 +477,22 @@ function AddOrderModal({ setShowModal, setShowAddOrderModal, setAddedData }) {
                       value={formik.values.order_date}
                       isInvalid={
                         formik.touched.order_date && formik.errors.order_date
+                      }
+                    ></Input>
+                  </FormControl>
+
+                  <FormControl mt="2">
+                    <FormLabel>
+                      Customer Profile (Corporate,Foundation,Government...)
+                    </FormLabel>
+                    <Input
+                      name="customer_profile"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.customer_profile}
+                      isInvalid={
+                        formik.touched.customer_profile &&
+                        formik.errors.customer_profile
                       }
                     ></Input>
                   </FormControl>

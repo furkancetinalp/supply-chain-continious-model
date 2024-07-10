@@ -11,6 +11,7 @@ pub struct CreateOrderRequest{
     // pub unit_price : f32,
     // pub total_price:f32,
     pub order_date:String,
+    pub customer_profile:String
 
         
     

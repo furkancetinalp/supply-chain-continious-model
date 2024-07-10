@@ -305,6 +305,7 @@ type Order =
         order_status:OrderStatus;
         delivery_date:text;
         created_date:text;
+        customer_profile:text;
         
     };
 type CreateOrderRequest = 
@@ -316,6 +317,7 @@ type CreateOrderRequest =
         // unit_price:float32;
         // total_price:float32;
         order_date:text;
+        customer_profile:text;
     };
 
  
