@@ -77,15 +77,80 @@ const data = [
 ];
 export default function TransactionChart() {
   const [orders, setOrders] = useState(null);
+  const [agreements, setAgreements] = useState(null);
+  const [income, setIncome] = useState([]);
   useEffect(function () {
     async function get_all_orders() {
-      let tempData = data;
       const orders =
         await supply_chain_continious_model_backend.get_all_orders();
       setOrders(orders);
 
+      const agreements =
+        await supply_chain_continious_model_backend.get_all_raw_material_agreements();
+      setAgreements(agreements);
+
       console.log(orders);
       console.log(new Date(orders.at(0).order_date).getMonth());
+
+      let outcome_jan = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 0)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(0).Expense = outcome_jan;
+
+      let outcome_feb = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 1)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(1).Expense = outcome_feb;
+
+      let outcome_mar = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 2)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(2).Expense = outcome_mar;
+
+      let outcome_apr = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 3)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(3).Expense = outcome_apr;
+
+      let outcome_may = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 4)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(4).Expense = outcome_may;
+
+      let outcome_jun = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 5)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(5).Expense = outcome_jun;
+
+      let outcome_jul = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 6)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(6).Expense = outcome_jul;
+
+      let outcome_aug = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 7)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(7).Expense = outcome_aug;
+
+      let outcome_sep = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 8)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(8).Expense = outcome_sep;
+
+      let outcome_oct = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 9)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(9).Expense = outcome_oct;
+
+      let outcome_nov = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 10)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(10).Expense = outcome_nov;
+
+      let outcome_dec = agreements
+        ?.filter((x) => new Date(x.agreement_date).getMonth() == 11)
+        .reduce((accum, item) => accum + item.total_price, 0);
+      data.at(11).Expense = outcome_dec;
 
       //MONTHLY SALES
       let jan = orders
@@ -147,6 +212,8 @@ export default function TransactionChart() {
         ?.filter((x) => new Date(x.order_date).getMonth() == 11)
         .reduce((accum, item) => accum + item.total_price, 0);
       data.at(11).Income = dec;
+
+      setIncome(data);
     }
     get_all_orders();
   }, []);
@@ -158,7 +225,7 @@ export default function TransactionChart() {
           <BarChart
             width={500}
             height={300}
-            data={data}
+            data={income}
             margin={{
               top: 20,
               right: 10,
