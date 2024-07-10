@@ -460,6 +460,19 @@ function AddOrderModal({ setShowModal, setShowAddOrderModal, setAddedData }) {
                     ></Input>
                   </FormControl>
 
+                  <FormControl mt="2">
+                    <FormLabel>Order Date</FormLabel>
+                    <Input
+                      name="order_date"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.order_date}
+                      isInvalid={
+                        formik.touched.order_date && formik.errors.order_date
+                      }
+                    ></Input>
+                  </FormControl>
+
                   <Button type="submit" mt="4" width="full" colorScheme="green">
                     Add
                   </Button>
