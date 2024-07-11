@@ -25,6 +25,7 @@ export default function Orders() {
   const [showModal, setShowModal] = React.useState(false);
   const [itemId, setItemId] = React.useState(null);
   const [showAddOrderModal, setShowAddOrderModal] = React.useState(false);
+  const [selectedDropdownId, setSelectedDropdownId] = useState(false);
 
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const btnDropdownRef = createRef();
@@ -38,6 +39,12 @@ export default function Orders() {
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
+
+  const handleDropdown = (id) => {
+    setDropdownPopoverShow(!dropdownPopoverShow);
+    setSelectedDropdownId(id);
+  };
+
   let bgColor = '';
   let color = 'bg-gray-800';
   const toast = useToast();
@@ -213,111 +220,101 @@ export default function Orders() {
                 >
                   Delete
                 </button> */}
-                <div className="flex flex-wrap">
-                  <div className="w-full px-4 sm:w-6/12 md:w-4/12">
-                    <div className="relative inline-flex w-full align-middle">
+                <button
+                  id="dropdownDefaultButton"
+                  data-dropdown-toggle="dropdown"
+                  className="inline-flex items-center rounded-lg bg-blue-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  type="button"
+                  onClick={() => handleDropdown(item.id)}
+                >
+                  Update Status
+                  <svg
+                    className="ms-3 h-2.5 w-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id="dropdown"
+                  className={`${!dropdownPopoverShow || selectedDropdownId != item.id ? 'hidden' : ''} w-15 z-10 divide-y divide-gray-100 rounded-lg bg-yellow-100 shadow dark:bg-gray-700`}
+                >
+                  <ul
+                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    aria-labelledby="dropdownDefaultButton"
+                  >
+                    <li>
                       <button
-                        className={
-                          'mb-1 mr-1 rounded px-6 py-3 text-sm font-bold uppercase text-black shadow outline-none hover:shadow-lg focus:outline-none ' +
-                          bgColor
+                        className="block px-4 py-2 hover:bg-green-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={() =>
+                          UpdateOrderStatus(item.id, { Processing: null }, '')
                         }
-                        style={{ transition: 'all .15s ease' }}
-                        type="button"
-                        ref={btnDropdownRef}
-                        onClick={() => {
-                          dropdownPopoverShow
-                            ? closeDropdownPopover()
-                            : openDropdownPopover();
-                        }}
                       >
-                        Update Status
+                        Processing
                       </button>
-                      <div
-                        ref={popoverDropdownRef}
-                        className={
-                          (dropdownPopoverShow ? 'block ' : 'hidden ') +
-                          (color === 'white' ? 'bg-white' : bgColor + ' ') +
-                          'z-50 float-left mt-1 list-none rounded py-2 text-left text-base shadow-lg'
+                    </li>
+                    <li>
+                      <button
+                        className="block px-4 py-2 hover:bg-green-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={() =>
+                          UpdateOrderStatus(item.id, { Shipped: null }, '')
                         }
-                        style={{ minWidth: '12rem' }}
                       >
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(item.id, { Processing: null }, '')
-                          }
-                        >
-                          Processing
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(item.id, { Shipped: null }, '')
-                          }
-                        >
-                          Shipped
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(
-                              item.id,
-                              { Delivered: null },
-                              new Date().toString(),
-                            )
-                          }
-                        >
-                          Delivered
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(
-                              item.id,
-                              { Completed: null },
-                              new Date().toString(),
-                            )
-                          }
-                        >
-                          Completed
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-red-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(item.id, { Rejected: null }, '')
-                          }
-                        >
-                          Rejected
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-red-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() =>
-                            UpdateOrderStatus(item.id, { Cancelled: null }, '')
-                          }
-                        >
-                          Cancelled
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                        Shipped
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className="block px-4 py-2 hover:bg-green-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={() =>
+                          UpdateOrderStatus(
+                            item.id,
+                            { Delivered: null },
+                            new Date().toString(),
+                          )
+                        }
+                      >
+                        Delivered
+                      </button>
+                    </li>
+                    <button
+                      className="block px-4 py-2 hover:bg-green-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                      onClick={() =>
+                        UpdateOrderStatus(
+                          item.id,
+                          { Completed: null },
+                          new Date().toString(),
+                        )
+                      }
+                    >
+                      Completed
+                    </button>
+                    <button
+                      className="block px-4 py-2 hover:bg-red-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                      onClick={() =>
+                        UpdateOrderStatus(item.id, { Rejected: null }, '')
+                      }
+                    >
+                      Rejected
+                    </button>
+                    <button
+                      className="block px-4 py-2 hover:bg-red-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                      onClick={() =>
+                        UpdateOrderStatus(item.id, { Cancelled: null }, '')
+                      }
+                    >
+                      Cancelled
+                    </button>
+                  </ul>
                 </div>
               </td>
             </tr>

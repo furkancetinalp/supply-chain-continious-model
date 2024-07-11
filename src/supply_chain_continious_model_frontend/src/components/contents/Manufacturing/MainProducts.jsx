@@ -293,92 +293,11 @@ export default function MainProducts() {
               <td className="px-6 py-4">{item.status}</td>
 
               <td className="px-2 py-4">
-                {/* <button
-                  onClick={() => updateMainProduct(item.id)}
-                  className="focus:shadow-outline-blue rounded-md bg-[#67e8f9] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none active:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => DeleteMainProduct(item.id)}
-                  className="focus:shadow-outline-red ml-2 rounded-md bg-[#db2777] px-4 py-2 font-medium text-white transition duration-150 ease-in-out hover:bg-pink-700 focus:outline-none active:bg-red-600"
-                >
-                  Delete
-                </button> */}
-                {/* <ShiftingDropDown
-                  DeleteMainProduct={DeleteMainProduct}
-                  updateMainProduct={updateMainProduct}
-                  itemId={itemId}
-                /> */}
-                {/* <DropdownButton
-                  updateMainProduct={updateMainProduct}
-                  DeleteMainProduct={DeleteMainProduct}
-                  itemId={itemId}
-                /> */}
-                {/* <div className="flex flex-wrap">
-                  <div className="w-full px-4 sm:w-6/12 md:w-4/12">
-                    <div className="relative inline-flex w-full align-middle">
-                      <button
-                        className={
-                          'mb-1 mr-1 rounded px-6 py-3 text-sm font-bold uppercase text-black shadow outline-none hover:shadow-lg focus:outline-none ' +
-                          bgColor
-                        }
-                        style={{ transition: 'all .15s ease' }}
-                        type="button"
-                        ref={btnDropdownRef}
-                        onClick={() => {
-                          dropdownPopoverShow
-                            ? closeDropdownPopover()
-                            : openDropdownPopover();
-                        }}
-                      >
-                        Actions
-                      </button>
-                      <div
-                        ref={popoverDropdownRef}
-                        className={
-                          (dropdownPopoverShow ? 'block ' : 'hidden ') +
-                          (color === 'white' ? 'bg-white' : bgColor + ' ') +
-                          'z-50 float-left mt-1 list-none rounded py-2 text-left text-base shadow-lg'
-                        }
-                        style={{ minWidth: '12rem' }}
-                      >
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-green-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() => AddMassProduct(item.id)}
-                        >
-                          Produce
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-blue-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() => updateMainProduct(item.id)}
-                        >
-                          Update
-                        </button>
-                        <button
-                          className={
-                            'whitespace-no-wrap block w-full bg-transparent px-4 py-2 text-sm font-normal hover:bg-red-300 ' +
-                            (color === 'black')
-                          }
-                          onClick={() => DeleteMainProduct(item.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
                 <>
                   <button
                     id="dropdownDefaultButton"
                     data-dropdown-toggle="dropdown"
-                    className="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="inline-flex items-center rounded-lg bg-blue-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     type="button"
                     onClick={() => handleDropdown(item.id)}
                   >
