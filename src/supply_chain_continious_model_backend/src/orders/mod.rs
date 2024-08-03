@@ -162,12 +162,4 @@ async fn update_order_status(order_id:u32,status:OrderStatus,delivered_date:Stri
 
 
 
-// assign_orders(count:u32) -> (bool,Vec<String>){
 
-// }
-
-// sipariş geldi 5 tane diyelim
-// products tablosundan approved olarak 5 tane var mı diye araması gerekiyor.
-// yoksa sipariş oluşmadı diye dön, false de dönülebilir
-//  o 5 tane bulunursa Ordered olarak statüsünü değiştir
-// Vec<OrderDetail> tablosuna her bir productın idsi ve ilgili siparişin id'si eklenecek şekilde 5 tane kayıt atılabilir
